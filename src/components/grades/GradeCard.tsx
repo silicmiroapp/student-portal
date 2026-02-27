@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import type { Grade } from '@/types/grades';
-import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS } from '@/constants/theme';
+import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS, FONTS } from '@/constants/theme';
 
 interface GradeCardProps {
   grade: Grade;
@@ -44,30 +44,31 @@ const styles = StyleSheet.create({
     gap: SPACING.md,
   },
   gradeCircle: {
-    width: 44,
-    height: 44,
+    width: 48,
+    height: 48,
     borderRadius: BORDER_RADIUS.full,
     backgroundColor: COLORS.surface,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: COLORS.primary,
+    borderColor: COLORS.secondary,
   },
   gradeLetter: {
     fontSize: FONT_SIZE.md,
-    fontWeight: '700',
-    color: COLORS.primary,
+    fontFamily: FONTS.bold,
+    color: COLORS.secondary,
   },
   info: {
     flex: 1,
   },
   name: {
     fontSize: FONT_SIZE.sm,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
     color: COLORS.text,
   },
   code: {
     fontSize: FONT_SIZE.xs,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginTop: 2,
   },

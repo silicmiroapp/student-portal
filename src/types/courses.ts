@@ -27,6 +27,7 @@ export interface CourseBlock {
   completed: boolean;
   dueDate?: DateString;
   duration?: string; // e.g. "15 min"
+  url?: string;
 }
 
 export interface CourseSection {

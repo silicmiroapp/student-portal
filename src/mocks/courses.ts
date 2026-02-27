@@ -81,6 +81,27 @@ export const MOCK_ENROLLMENTS: Enrollment[] = [
 ];
 
 const MOCK_SECTIONS: Record<string, CourseSection[]> = {
+  'course-2': [
+    {
+      id: 'sec-2-1',
+      title: 'Module 1: Marketing Fundamentals',
+      blocks: [
+        { id: 'b-2-1', type: 'video', title: 'Introduction to Marketing', completed: true, duration: '18 min' },
+        { id: 'b-2-2', type: 'reading', title: 'The Marketing Mix (4Ps)', completed: true, duration: '12 min' },
+        { id: 'b-2-3', type: 'video', title: 'Marketing 101: What is Marketing?', completed: false, duration: '13 min', url: 'https://www.youtube.com/watch?v=pKvdb5YuC7o' },
+        { id: 'b-2-4', type: 'quiz', title: 'Module 1 Quiz', completed: true, dueDate: '2026-02-05' },
+      ],
+    },
+    {
+      id: 'sec-2-2',
+      title: 'Module 2: Consumer Behavior',
+      blocks: [
+        { id: 'b-2-5', type: 'video', title: 'Understanding Consumer Decisions', completed: true, duration: '22 min' },
+        { id: 'b-2-6', type: 'reading', title: 'Market Segmentation Strategies', completed: false, duration: '15 min' },
+        { id: 'b-2-7', type: 'assignment', title: 'Market Segmentation Report', completed: false, dueDate: '2026-03-03' },
+      ],
+    },
+  ],
   'course-1': [
     {
       id: 'sec-1-1',

@@ -14,6 +14,8 @@ import {
   SPACING,
   FONT_SIZE,
   BORDER_RADIUS,
+  SHADOWS,
+  FONTS,
 } from '@/constants/theme';
 
 export default function CourseDetailScreen() {
@@ -127,13 +129,15 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.md,
     backgroundColor: COLORS.background,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    borderBottomColor: COLORS.borderLight,
     gap: SPACING.sm,
+    ...SHADOWS.sm,
   },
   backButton: {
-    width: 36,
-    height: 36,
+    width: 40,
+    height: 40,
     borderRadius: BORDER_RADIUS.full,
+    backgroundColor: COLORS.surfaceAlt,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -142,12 +146,12 @@ const styles = StyleSheet.create({
   },
   courseCode: {
     fontSize: FONT_SIZE.xs,
-    fontWeight: '600',
-    color: COLORS.primary,
+    fontFamily: FONTS.semiBold,
+    color: COLORS.secondary,
   },
   courseName: {
     fontSize: FONT_SIZE.lg,
-    fontWeight: '700',
+    fontFamily: FONTS.bold,
     color: COLORS.text,
   },
   scroll: {
@@ -162,11 +166,13 @@ const styles = StyleSheet.create({
   },
   instructor: {
     fontSize: FONT_SIZE.sm,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginBottom: SPACING.sm,
   },
   description: {
     fontSize: FONT_SIZE.sm,
+    fontFamily: FONTS.regular,
     color: COLORS.text,
     lineHeight: 20,
   },
@@ -180,16 +186,17 @@ const styles = StyleSheet.create({
   },
   progressTitle: {
     fontSize: FONT_SIZE.md,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
     color: COLORS.text,
   },
   progressPercent: {
     fontSize: FONT_SIZE.md,
-    fontWeight: '700',
-    color: COLORS.primary,
+    fontFamily: FONTS.bold,
+    color: COLORS.secondary,
   },
   progressDetail: {
     fontSize: FONT_SIZE.xs,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginTop: SPACING.sm,
     textAlign: 'center',
@@ -199,7 +206,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: FONT_SIZE.lg,
-    fontWeight: '600',
+    fontFamily: FONTS.bold,
     color: COLORS.text,
     marginBottom: SPACING.sm,
   },
@@ -212,24 +219,25 @@ const styles = StyleSheet.create({
   deadlineTitle: {
     flex: 1,
     fontSize: FONT_SIZE.sm,
+    fontFamily: FONTS.regular,
     color: COLORS.text,
   },
   deadlineDate: {
     fontSize: FONT_SIZE.xs,
+    fontFamily: FONTS.semiBold,
     color: COLORS.textSecondary,
-    fontWeight: '500',
   },
   contentSection: {
     marginBottom: SPACING.sm,
   },
   contentSectionTitle: {
     fontSize: FONT_SIZE.md,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
     color: COLORS.text,
     marginBottom: SPACING.sm,
   },
   divider: {
     height: 1,
-    backgroundColor: COLORS.border,
+    backgroundColor: COLORS.borderLight,
   },
 });

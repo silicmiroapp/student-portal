@@ -10,9 +10,9 @@ interface ProgressBarProps {
 
 export function ProgressBar({
   progress,
-  color = COLORS.primary,
+  color = COLORS.secondary,
   height = 8,
-  backgroundColor = COLORS.border,
+  backgroundColor = COLORS.borderLight,
 }: ProgressBarProps) {
   const clampedProgress = Math.min(100, Math.max(0, progress));
 

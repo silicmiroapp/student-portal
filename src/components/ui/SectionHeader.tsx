@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { COLORS, SPACING, FONT_SIZE } from '@/constants/theme';
+import { COLORS, SPACING, FONT_SIZE, FONTS } from '@/constants/theme';
 
 interface SectionHeaderProps {
   title: string;
@@ -25,16 +25,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: SPACING.sm,
+    marginBottom: SPACING.md,
   },
   title: {
     fontSize: FONT_SIZE.lg,
-    fontWeight: '600',
+    fontFamily: FONTS.bold,
     color: COLORS.text,
   },
   action: {
     fontSize: FONT_SIZE.sm,
-    color: COLORS.primary,
-    fontWeight: '500',
+    color: COLORS.secondary,
+    fontFamily: FONTS.semiBold,
   },
 });

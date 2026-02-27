@@ -1,5 +1,5 @@
 import { View, StyleSheet, TouchableOpacity, type ViewStyle } from 'react-native';
-import { COLORS, SPACING, BORDER_RADIUS } from '@/constants/theme';
+import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '@/constants/theme';
 
 interface CardProps {
   children: React.ReactNode;
@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.lg,
     padding: SPACING.lg,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: COLORS.borderLight,
+    ...SHADOWS.sm,
   },
 });

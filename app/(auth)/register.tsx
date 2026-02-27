@@ -23,6 +23,7 @@ import {
   SPACING,
   FONT_SIZE,
   BORDER_RADIUS,
+  FONTS,
 } from '@/constants/theme';
 
 export default function RegisterScreen() {
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: SPACING.lg,
+    paddingHorizontal: SPACING.xl,
     paddingVertical: SPACING.xxl,
   },
   backButton: {
@@ -197,30 +198,31 @@ const styles = StyleSheet.create({
   },
   backText: {
     fontSize: FONT_SIZE.md,
-    color: COLORS.primary,
-    fontWeight: '600',
+    color: COLORS.secondary,
+    fontFamily: FONTS.semiBold,
   },
   header: {
     alignItems: 'center',
-    marginBottom: SPACING.xl,
+    marginBottom: SPACING.xxl,
   },
   title: {
     fontSize: FONT_SIZE.xxl,
-    fontWeight: '700',
+    fontFamily: FONTS.bold,
     color: COLORS.text,
     marginBottom: SPACING.xs,
   },
   subtitle: {
     fontSize: FONT_SIZE.md,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
   },
   form: {
-    marginBottom: SPACING.lg,
+    marginBottom: SPACING.xl,
   },
   errorBanner: {
-    backgroundColor: '#FEF2F2',
+    backgroundColor: COLORS.errorLight,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: COLORS.errorBorder,
     borderRadius: BORDER_RADIUS.sm,
     padding: SPACING.sm,
     marginBottom: SPACING.md,
@@ -228,6 +230,7 @@ const styles = StyleSheet.create({
   errorBannerText: {
     color: COLORS.error,
     fontSize: FONT_SIZE.sm,
+    fontFamily: FONTS.regular,
     textAlign: 'center',
   },
   button: {
@@ -240,11 +243,12 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: FONT_SIZE.sm,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
   },
   footerLink: {
     fontSize: FONT_SIZE.sm,
-    color: COLORS.primary,
-    fontWeight: '600',
+    color: COLORS.secondary,
+    fontFamily: FONTS.semiBold,
   },
 });

@@ -3,6 +3,7 @@ import { Slot, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator, StyleSheet, Platform, BackHandler } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useFonts, OpenSans_400Regular, OpenSans_600SemiBold, OpenSans_700Bold } from '@expo-google-fonts/open-sans';
 import { useAuthStore } from '@/features/auth/store';
 import { COLORS } from '@/constants/theme';
 
@@ -12,13 +13,19 @@ export default function RootLayout() {
   const segments = useSegments();
   const router = useRouter();
 
+  const [fontsLoaded] = useFonts({
+    OpenSans_400Regular,
+    OpenSans_600SemiBold,
+    OpenSans_700Bold,
+  });
+
   useEffect(() => {
     hydrate();
   }, [hydrate]);
 
   // Auth guard — redirect based on auth state
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !fontsLoaded) return;
 
     const inAuthGroup = segments[0] === '(auth)';
 
@@ -27,7 +34,7 @@ export default function RootLayout() {
     } else if (isAuthenticated && inAuthGroup) {
       router.replace('/(main)/dashboard');
     }
-  }, [isAuthenticated, isLoading, segments, router]);
+  }, [isAuthenticated, isLoading, fontsLoaded, segments, router]);
 
   // Android hardware back button — exit app from login or home (don't go back to splash)
   const onBackPress = useCallback(() => {
@@ -50,7 +57,7 @@ export default function RootLayout() {
     return () => sub.remove();
   }, [onBackPress]);
 
-  if (isLoading) {
+  if (isLoading || !fontsLoaded) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator size="large" color={COLORS.primary} />

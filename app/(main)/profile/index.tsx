@@ -14,6 +14,7 @@ import {
   COLORS,
   SPACING,
   FONT_SIZE,
+  FONTS,
 } from '@/constants/theme';
 
 const STANDING_CONFIG: Record<AcademicStatus, { label: string; variant: 'success' | 'warning' | 'error' | 'info' }> = {
@@ -124,22 +125,23 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
   },
   scrollContent: {
-    paddingHorizontal: SPACING.lg,
+    paddingHorizontal: SPACING.xl,
     paddingTop: SPACING.lg,
   },
   profileHeader: {
     alignItems: 'center',
-    marginBottom: SPACING.lg,
-    paddingVertical: SPACING.md,
+    marginBottom: SPACING.xl,
+    paddingVertical: SPACING.lg,
   },
   name: {
     fontSize: FONT_SIZE.xl,
-    fontWeight: '700',
+    fontFamily: FONTS.bold,
     color: COLORS.text,
     marginTop: SPACING.md,
   },
   studentId: {
     fontSize: FONT_SIZE.sm,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginTop: SPACING.xs,
     marginBottom: SPACING.sm,
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: FONT_SIZE.md,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
     color: COLORS.text,
     marginBottom: SPACING.md,
   },
@@ -159,15 +161,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: SPACING.sm,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    borderBottomColor: COLORS.borderLight,
   },
   infoLabel: {
     fontSize: FONT_SIZE.sm,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
   },
   infoValue: {
     fontSize: FONT_SIZE.sm,
-    fontWeight: '500',
+    fontFamily: FONTS.semiBold,
     color: COLORS.text,
     flexShrink: 1,
     textAlign: 'right',
@@ -180,15 +183,16 @@ const styles = StyleSheet.create({
   },
   creditsLabel: {
     fontSize: FONT_SIZE.sm,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
   },
   creditsPercent: {
     fontSize: FONT_SIZE.sm,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
     color: COLORS.text,
   },
   signOutSection: {
-    marginTop: SPACING.md,
+    marginTop: SPACING.lg,
     marginBottom: SPACING.lg,
   },
 });

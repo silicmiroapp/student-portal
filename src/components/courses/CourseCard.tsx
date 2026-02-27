@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/Card';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Badge } from '@/components/ui/Badge';
 import type { Enrollment } from '@/types/courses';
-import { COLORS, SPACING, FONT_SIZE } from '@/constants/theme';
+import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS, FONTS } from '@/constants/theme';
 
 interface CourseCardProps {
   enrollment: Enrollment;
@@ -44,24 +44,25 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.sm,
   },
   codeContainer: {
-    backgroundColor: COLORS.infoLight,
+    backgroundColor: COLORS.secondaryLight,
     paddingHorizontal: SPACING.sm,
     paddingVertical: 2,
-    borderRadius: 4,
+    borderRadius: BORDER_RADIUS.xs,
   },
   code: {
     fontSize: FONT_SIZE.xs,
-    fontWeight: '600',
-    color: COLORS.info,
+    fontFamily: FONTS.semiBold,
+    color: COLORS.secondary,
   },
   name: {
     fontSize: FONT_SIZE.md,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
     color: COLORS.text,
     marginBottom: SPACING.xs,
   },
   instructor: {
     fontSize: FONT_SIZE.sm,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginBottom: SPACING.md,
   },
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: FONT_SIZE.xs,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
     color: COLORS.textSecondary,
     width: 36,
     textAlign: 'right',

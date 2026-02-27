@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/Card';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Badge } from '@/components/ui/Badge';
 import type { GradeSummary, AcademicStatus } from '@/types/grades';
-import { COLORS, SPACING, FONT_SIZE } from '@/constants/theme';
+import { COLORS, SPACING, FONT_SIZE, FONTS } from '@/constants/theme';
 
 interface GradeSummaryCardProps {
   summary: GradeSummary;
@@ -72,12 +72,13 @@ const styles = StyleSheet.create({
   },
   gpaLabel: {
     fontSize: FONT_SIZE.xs,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginBottom: SPACING.xs,
   },
   gpaValue: {
     fontSize: FONT_SIZE.xl,
-    fontWeight: '700',
+    fontFamily: FONTS.bold,
     color: COLORS.text,
   },
   creditsSection: {
@@ -90,11 +91,12 @@ const styles = StyleSheet.create({
   },
   creditsLabel: {
     fontSize: FONT_SIZE.sm,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
   },
   creditsValue: {
     fontSize: FONT_SIZE.sm,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
     color: COLORS.text,
   },
   statsRow: {
@@ -102,6 +104,7 @@ const styles = StyleSheet.create({
   },
   statText: {
     fontSize: FONT_SIZE.sm,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
   },
 });

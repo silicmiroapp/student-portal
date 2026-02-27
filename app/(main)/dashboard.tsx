@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react';
-import { View, Text, ScrollView, StyleSheet, RefreshControl } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,6 +18,8 @@ import {
   SPACING,
   FONT_SIZE,
   BORDER_RADIUS,
+  SHADOWS,
+  FONTS,
 } from '@/constants/theme';
 
 export default function DashboardScreen() {
@@ -44,12 +46,19 @@ export default function DashboardScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Good {getGreeting()},</Text>
-          <Text style={styles.userName}>{user?.name ?? 'Student'}</Text>
-          {user?.program && (
-            <Text style={styles.program}>{user.program}</Text>
-          )}
+        <View style={styles.headerLeft}>
+          <Image
+            source={require('../../assets/NewLOGO2022_BlackRed.png')}
+            style={styles.headerLogo}
+            resizeMode="contain"
+          />
+          <View>
+            <Text style={styles.greeting}>Good {getGreeting()},</Text>
+            <Text style={styles.userName}>{user?.name ?? 'Student'}</Text>
+            {user?.program && (
+              <Text style={styles.program}>{user.program}</Text>
+            )}
+          </View>
         </View>
         <Avatar name={user?.name ?? 'U'} imageUrl={user?.avatarUrl} size={48} />
       </View>
@@ -175,19 +184,31 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.md,
     backgroundColor: COLORS.background,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    borderBottomColor: COLORS.borderLight,
+    ...SHADOWS.sm,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.sm,
+  },
+  headerLogo: {
+    width: 110,
+    height: 28,
   },
   greeting: {
     fontSize: FONT_SIZE.sm,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
   },
   userName: {
     fontSize: FONT_SIZE.xl,
-    fontWeight: '700',
+    fontFamily: FONTS.bold,
     color: COLORS.text,
   },
   program: {
     fontSize: FONT_SIZE.xs,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
@@ -199,7 +220,7 @@ const styles = StyleSheet.create({
     paddingTop: SPACING.lg,
   },
   section: {
-    marginBottom: SPACING.lg,
+    marginBottom: 28,
   },
   courseCard: {
     marginBottom: SPACING.sm,
@@ -216,33 +237,33 @@ const styles = StyleSheet.create({
   },
   courseCode: {
     fontSize: FONT_SIZE.xs,
-    fontWeight: '600',
-    color: COLORS.primary,
+    fontFamily: FONTS.semiBold,
+    color: COLORS.secondary,
   },
   courseName: {
     fontSize: FONT_SIZE.sm,
-    fontWeight: '500',
+    fontFamily: FONTS.semiBold,
     color: COLORS.text,
     marginTop: 2,
   },
   courseProgress: {
     fontSize: FONT_SIZE.sm,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
     color: COLORS.textSecondary,
   },
   divider: {
     height: 1,
-    backgroundColor: COLORS.border,
+    backgroundColor: COLORS.borderLight,
   },
   examRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: SPACING.sm,
-    gap: SPACING.sm,
+    gap: SPACING.md,
   },
   examIconContainer: {
-    width: 36,
-    height: 36,
+    width: 40,
+    height: 40,
     borderRadius: BORDER_RADIUS.md,
     backgroundColor: COLORS.warningLight,
     justifyContent: 'center',
@@ -253,16 +274,18 @@ const styles = StyleSheet.create({
   },
   examSubject: {
     fontSize: FONT_SIZE.sm,
-    fontWeight: '500',
+    fontFamily: FONTS.semiBold,
     color: COLORS.text,
   },
   examMeta: {
     fontSize: FONT_SIZE.xs,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
   examLocation: {
     fontSize: FONT_SIZE.xs,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginTop: 1,
   },

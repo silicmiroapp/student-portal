@@ -1,5 +1,5 @@
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { COLORS, FONT_SIZE, BORDER_RADIUS } from '@/constants/theme';
+import { COLORS, FONTS, SHADOWS } from '@/constants/theme';
 
 interface AvatarProps {
   name: string;
@@ -37,12 +37,18 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: COLORS.textLight,
+    ...SHADOWS.sm,
   },
   letter: {
-    fontWeight: '700',
+    fontFamily: FONTS.bold,
     color: COLORS.textLight,
   },
   image: {
     resizeMode: 'cover',
+    borderWidth: 2,
+    borderColor: COLORS.textLight,
+    ...SHADOWS.sm,
   },
 });

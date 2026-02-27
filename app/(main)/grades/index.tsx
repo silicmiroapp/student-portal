@@ -9,7 +9,7 @@ import { SectionHeader } from '@/components/ui/SectionHeader';
 import { useGradesStore } from '@/features/grades/store';
 import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
 import type { Grade } from '@/types/grades';
-import { COLORS, SPACING } from '@/constants/theme';
+import { COLORS, SPACING, SHADOWS } from '@/constants/theme';
 
 export default function GradesScreen() {
   const insets = useSafeAreaInsets();
@@ -80,7 +80,8 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.md,
     backgroundColor: COLORS.background,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    borderBottomColor: COLORS.borderLight,
+    ...SHADOWS.sm,
   },
   list: {
     paddingHorizontal: SPACING.lg,

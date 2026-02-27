@@ -1,22 +1,30 @@
+import { Platform } from 'react-native';
+
 // Centralized design tokens for consistent styling across the app
 export const COLORS = {
-  primary: '#2563EB',
-  primaryDark: '#1D4ED8',
-  secondary: '#64748B',
+  primary: '#b9312c',
+  primaryDark: '#9a2824',
+  primaryLight: '#fdf0f0',
+  secondary: '#00a1c1',
+  secondaryDark: '#008aa6',
+  secondaryLight: '#e6f7fb',
   background: '#FFFFFF',
   surface: '#F8FAFC',
-  text: '#0F172A',
+  surfaceAlt: '#F5F5F5',
+  text: '#1A1A1A',
   textSecondary: '#64748B',
   textLight: '#FFFFFF',
   border: '#E2E8F0',
-  error: '#EF4444',
-  errorLight: '#FEF2F2',
-  success: '#22C55E',
-  successLight: '#F0FDF4',
-  warning: '#F59E0B',
-  warningLight: '#FFFBEB',
-  info: '#3B82F6',
-  infoLight: '#EFF6FF',
+  borderLight: '#F0F2F5',
+  error: '#b9312c',
+  errorLight: '#fdf0f0',
+  errorBorder: '#f0c5c3',
+  success: '#2cb936',
+  successLight: '#f0fdf4',
+  warning: '#fd9308',
+  warningLight: '#fff7eb',
+  info: '#00a1c1',
+  infoLight: '#e6f7fb',
   inputBackground: '#F1F5F9',
 } as const;
 
@@ -33,14 +41,77 @@ export const FONT_SIZE = {
   xs: 12,
   sm: 14,
   md: 16,
-  lg: 18,
-  xl: 24,
-  xxl: 32,
+  lg: 20,
+  xl: 26,
+  xxl: 34,
 } as const;
 
 export const BORDER_RADIUS = {
-  sm: 6,
-  md: 10,
+  xs: 4,
+  sm: 8,
+  md: 12,
   lg: 16,
+  xl: 20,
+  pill: 25,
   full: 9999,
+} as const;
+
+export const SHADOWS = {
+  sm: Platform.select({
+    ios: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.08,
+      shadowRadius: 2,
+    },
+    android: {
+      elevation: 2,
+    },
+    default: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.08,
+      shadowRadius: 2,
+    },
+  })!,
+  md: Platform.select({
+    ios: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.12,
+      shadowRadius: 4,
+    },
+    android: {
+      elevation: 4,
+    },
+    default: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.12,
+      shadowRadius: 4,
+    },
+  })!,
+  lg: Platform.select({
+    ios: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.16,
+      shadowRadius: 8,
+    },
+    android: {
+      elevation: 8,
+    },
+    default: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.16,
+      shadowRadius: 8,
+    },
+  })!,
+} as const;
+
+export const FONTS = {
+  regular: 'OpenSans_400Regular',
+  semiBold: 'OpenSans_600SemiBold',
+  bold: 'OpenSans_700Bold',
 } as const;

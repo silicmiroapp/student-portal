@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
   type ViewStyle,
 } from 'react-native';
-import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS } from '@/constants/theme';
+import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS, SHADOWS, FONTS } from '@/constants/theme';
 
 interface ButtonProps {
   title: string;
@@ -59,11 +59,12 @@ export function Button({
 
 const styles = StyleSheet.create({
   base: {
-    height: 50,
-    borderRadius: BORDER_RADIUS.md,
+    height: 52,
+    borderRadius: BORDER_RADIUS.pill,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: SPACING.lg,
+    paddingHorizontal: SPACING.xl,
+    ...SHADOWS.sm,
   },
   primary: {
     backgroundColor: COLORS.primary,
@@ -82,7 +83,8 @@ const styles = StyleSheet.create({
   text: {
     color: COLORS.textLight,
     fontSize: FONT_SIZE.md,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
+    letterSpacing: 0.5,
   },
   outlineText: {
     color: COLORS.primary,

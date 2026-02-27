@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { DashboardStats } from '@/types/dashboard';
-import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS } from '@/constants/theme';
+import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS, SHADOWS, FONTS } from '@/constants/theme';
 
 interface QuickStatsRowProps {
   stats: DashboardStats;
@@ -17,7 +17,7 @@ interface StatItem {
 
 export function QuickStatsRow({ stats }: QuickStatsRowProps) {
   const items: StatItem[] = [
-    { label: 'Active', value: String(stats.activeCourses), icon: 'book-outline', color: COLORS.primary, bg: COLORS.infoLight },
+    { label: 'Active', value: String(stats.activeCourses), icon: 'book-outline', color: COLORS.secondary, bg: COLORS.secondaryLight },
     { label: 'Completed', value: String(stats.completedCourses), icon: 'checkmark-circle-outline', color: COLORS.success, bg: COLORS.successLight },
     { label: 'GPA', value: stats.currentGPA.toFixed(2), icon: 'trophy-outline', color: COLORS.warning, bg: COLORS.warningLight },
     { label: 'Deadlines', value: String(stats.upcomingDeadlines), icon: 'alarm-outline', color: COLORS.error, bg: COLORS.errorLight },
@@ -52,11 +52,12 @@ const styles = StyleSheet.create({
     padding: SPACING.md,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: COLORS.borderLight,
+    ...SHADOWS.sm,
   },
   iconCircle: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     borderRadius: BORDER_RADIUS.full,
     justifyContent: 'center',
     alignItems: 'center',
@@ -64,11 +65,12 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: FONT_SIZE.xl,
-    fontWeight: '700',
+    fontFamily: FONTS.bold,
     color: COLORS.text,
   },
   label: {
     fontSize: FONT_SIZE.xs,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginTop: 2,
   },

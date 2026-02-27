@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, FONT_SIZE } from '@/constants/theme';
+import { COLORS, SPACING, FONT_SIZE, FONTS } from '@/constants/theme';
 
 interface EmptyStateProps {
   icon?: keyof typeof Ionicons.glyphMap;
@@ -28,13 +28,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: FONT_SIZE.lg,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
     color: COLORS.text,
     marginTop: SPACING.md,
     textAlign: 'center',
   },
   message: {
     fontSize: FONT_SIZE.sm,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginTop: SPACING.sm,
     textAlign: 'center',

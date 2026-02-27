@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   type TextInputProps,
 } from 'react-native';
-import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS } from '@/constants/theme';
+import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS, FONTS } from '@/constants/theme';
 
 interface InputProps extends Omit<TextInputProps, 'onChange'> {
   label: string;
@@ -54,13 +54,13 @@ export function Input({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: SPACING.md,
+    marginBottom: SPACING.lg,
   },
   label: {
     fontSize: FONT_SIZE.sm,
-    fontWeight: '500',
+    fontFamily: FONTS.semiBold,
     color: COLORS.text,
-    marginBottom: SPACING.xs,
+    marginBottom: SPACING.sm,
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -75,22 +75,24 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: 48,
+    height: 50,
     paddingHorizontal: SPACING.md,
     fontSize: FONT_SIZE.md,
+    fontFamily: FONTS.regular,
     color: COLORS.text,
   },
   toggle: {
     paddingHorizontal: SPACING.md,
   },
   toggleText: {
-    color: COLORS.primary,
+    color: COLORS.secondary,
     fontSize: FONT_SIZE.sm,
-    fontWeight: '500',
+    fontFamily: FONTS.semiBold,
   },
   error: {
     color: COLORS.error,
     fontSize: FONT_SIZE.xs,
+    fontFamily: FONTS.regular,
     marginTop: SPACING.xs,
   },
 });

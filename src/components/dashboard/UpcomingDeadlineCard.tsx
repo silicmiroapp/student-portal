@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { CourseDeadline } from '@/types/courses';
-import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS } from '@/constants/theme';
+import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS, FONTS } from '@/constants/theme';
 
 interface UpcomingDeadlineCardProps {
   deadline: CourseDeadline;
@@ -36,7 +36,7 @@ export function UpcomingDeadlineCard({ deadline }: UpcomingDeadlineCardProps) {
         <Ionicons
           name={TYPE_ICONS[deadline.type]}
           size={18}
-          color={isOverdue ? COLORS.error : COLORS.primary}
+          color={isOverdue ? COLORS.error : COLORS.secondary}
         />
       </View>
       <View style={styles.content}>
@@ -55,13 +55,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: SPACING.sm,
-    gap: SPACING.sm,
+    gap: SPACING.md,
   },
   iconContainer: {
-    width: 36,
-    height: 36,
+    width: 40,
+    height: 40,
     borderRadius: BORDER_RADIUS.md,
-    backgroundColor: COLORS.infoLight,
+    backgroundColor: COLORS.secondaryLight,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -73,11 +73,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: FONT_SIZE.sm,
-    fontWeight: '500',
+    fontFamily: FONTS.semiBold,
     color: COLORS.text,
   },
   course: {
     fontSize: FONT_SIZE.xs,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
@@ -86,6 +87,6 @@ const styles = StyleSheet.create({
   },
   dueText: {
     fontSize: FONT_SIZE.xs,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
   },
 });
