@@ -20,15 +20,18 @@ const mockApi = {
       throw new Error('Invalid email or password');
     }
 
+    // Demo account: demo@student.edu / demo123
+    const isDemoAccount = data.email === 'demo@student.edu';
+
     return {
       user: {
         id: '1',
-        email: data.email,
-        name: 'Test User',
+        email: isDemoAccount ? 'demo@student.edu' : data.email,
+        name: isDemoAccount ? 'Marko Petrovic' : 'Test User',
         studentId: 'BUS-2025-0142',
         program: 'Bachelor of Business Administration',
         enrollmentYear: 2025,
-        lmsUsername: 'testuser_lms',
+        lmsUsername: isDemoAccount ? 'mpetrovic' : 'testuser_lms',
       },
       accessToken: `mock-access-${Date.now()}`,
       refreshToken: `mock-refresh-${Date.now()}`,

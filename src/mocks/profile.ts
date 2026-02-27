@@ -3,8 +3,8 @@ import type { StudentProfile } from '@/types/profile';
 export const MOCK_PROFILE: StudentProfile = {
   id: '1',
   studentId: 'BUS-2025-0142',
-  name: 'Test User',
-  email: 'student@university.edu',
+  name: 'Marko Petrovic',
+  email: 'demo@student.edu',
   phone: '+1 (555) 123-4567',
   program: 'Bachelor of Business Administration',
   department: 'School of Business',
@@ -12,7 +12,7 @@ export const MOCK_PROFILE: StudentProfile = {
   expectedGraduation: '2029-05-15',
   academicStanding: 'good_standing',
   advisor: 'Prof. Margaret Thompson',
-  lmsUsername: 'testuser_lms',
+  lmsUsername: 'mpetrovic',
   totalCredits: 120,
   completedCredits: 11,
 };
