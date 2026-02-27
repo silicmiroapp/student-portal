@@ -1,0 +1,89 @@
+import { useEffect, useCallback } from 'react';
+import { View, FlatList, StyleSheet, RefreshControl } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { CourseCard } from '@/components/courses/CourseCard';
+import { LoadingScreen } from '@/components/ui/LoadingScreen';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { SectionHeader } from '@/components/ui/SectionHeader';
+import { useCoursesStore } from '@/features/courses/store';
+import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
+import type { Enrollment } from '@/types/courses';
+import { COLORS, SPACING } from '@/constants/theme';
+
+export default function CoursesScreen() {
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const { enrollments, isLoading, fetchEnrollments } = useCoursesStore();
+
+  useEffect(() => {
+    fetchEnrollments();
+  }, [fetchEnrollments]);
+
+  useRefreshOnFocus(fetchEnrollments);
+
+  const onRefresh = useCallback(() => {
+    fetchEnrollments();
+  }, [fetchEnrollments]);
+
+  if (isLoading && enrollments.length === 0) {
+    return <LoadingScreen />;
+  }
+
+  const renderItem = ({ item }: { item: Enrollment }) => (
+    <CourseCard
+      enrollment={item}
+      onPress={() => router.push(`/(main)/courses/${item.course.id}`)}
+    />
+  );
+
+  return (
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.header}>
+        <SectionHeader title="My Courses" />
+      </View>
+      <FlatList
+        data={enrollments}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        contentContainerStyle={[
+          styles.list,
+          enrollments.length === 0 && styles.emptyList,
+        ]}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+        }
+        ListEmptyComponent={
+          <EmptyState
+            icon="book-outline"
+            title="No Courses"
+            message="You are not enrolled in any courses yet."
+          />
+        }
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.surface,
+  },
+  header: {
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
+    backgroundColor: COLORS.background,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  list: {
+    paddingHorizontal: SPACING.lg,
+    paddingTop: SPACING.md,
+    paddingBottom: SPACING.xxl,
+  },
+  emptyList: {
+    flex: 1,
+  },
+});
