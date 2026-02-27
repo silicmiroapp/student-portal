@@ -47,26 +47,57 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Mock credential table — in production, auth is server-side only.
+// SECURITY: These only exist in mock mode, blocked in production by ENV checks.
+const MOCK_ACCOUNTS: Record<string, { password: string; response: AuthResponse }> = {
+  'demo@student.edu': {
+    password: 'Demo1234',
+    response: {
+      user: {
+        id: '1',
+        email: 'demo@student.edu',
+        name: 'Demo User',
+        role: 'user',
+        studentId: 'BUS-2025-0142',
+        program: 'Bachelor of Business Administration',
+        enrollmentYear: 2025,
+        lmsUsername: 'demo',
+      },
+      accessToken: '',
+      refreshToken: '',
+    },
+  },
+  'admin@portal.edu': {
+    password: 'Admin1234',
+    response: {
+      user: {
+        id: '0',
+        email: 'admin@portal.edu',
+        name: 'System Admin',
+        role: 'admin',
+      },
+      accessToken: '',
+      refreshToken: '',
+    },
+  },
+};
+
 const mockApi = {
   async login(data: LoginRequest): Promise<AuthResponse> {
     checkRateLimit();
     await delay(MOCK_DELAY);
 
+    const email = data.email.toLowerCase().trim();
+    const account = MOCK_ACCOUNTS[email];
+
     // Generic error — do NOT reveal whether the email exists
-    if (data.password.length < 8) {
+    if (!account || account.password !== data.password) {
       throw new Error('Invalid email or password');
     }
 
     return {
-      user: {
-        id: '1',
-        email: data.email,
-        name: 'Demo User',
-        studentId: 'STU-2025-0001',
-        program: 'Bachelor of Business Administration',
-        enrollmentYear: 2025,
-        lmsUsername: data.email.split('@')[0],
-      },
+      ...account.response,
+      user: { ...account.response.user },
       accessToken: `mock-access-${Date.now()}`,
       refreshToken: `mock-refresh-${Date.now()}`,
     };
@@ -75,14 +106,16 @@ const mockApi = {
   async register(data: RegisterRequest): Promise<AuthResponse> {
     await delay(MOCK_DELAY);
 
+    // Registration always creates a regular user — never admin
     return {
       user: {
-        id: '2',
+        id: `${Date.now()}`,
         email: data.email,
         name: data.name,
-        studentId: 'STU-2025-0002',
+        role: 'user',
+        studentId: `STU-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9999)).padStart(4, '0')}`,
         program: 'Bachelor of Business Administration',
-        enrollmentYear: 2025,
+        enrollmentYear: new Date().getFullYear(),
         lmsUsername: data.email.split('@')[0],
       },
       accessToken: `mock-access-${Date.now()}`,

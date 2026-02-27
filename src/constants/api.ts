@@ -38,4 +38,14 @@ export const ENDPOINTS = {
     PAY: (installmentId: string) =>
       `/finance/installments/${encodeURIComponent(installmentId)}/pay`,
   },
+  ADMIN: {
+    USERS: '/admin/users',
+    USER_DETAIL: (id: string) => `/admin/users/${encodeURIComponent(id)}`,
+    USER_TOGGLE: (id: string) => `/admin/users/${encodeURIComponent(id)}/toggle`,
+    ACTIVITY: '/admin/activity',
+    LOGS: '/admin/logs',
+    STATS: '/admin/stats',
+    STUDENT_FINANCE: (studentId: string) =>
+      `/admin/finance/${encodeURIComponent(studentId)}`,
+  },
 } as const;

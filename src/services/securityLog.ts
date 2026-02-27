@@ -11,7 +11,11 @@ type SecurityEvent =
   | 'AUTH_TOKEN_REFRESH_FAILURE'
   | 'AUTH_HYDRATE_CORRUPT'
   | 'AUTH_RATE_LIMITED'
-  | 'STORAGE_PARSE_ERROR';
+  | 'STORAGE_PARSE_ERROR'
+  | 'ADMIN_ACCESS'
+  | 'ADMIN_USER_MODIFIED'
+  | 'ADMIN_FINANCE_VIEWED'
+  | 'ADMIN_UNAUTHORIZED_ACCESS';
 
 // Security-safe metadata — NEVER include passwords, tokens, or PII
 interface LogMeta {
@@ -19,6 +23,10 @@ interface LogMeta {
   email?: string;
   reason?: string;
   attempts?: number;
+  adminId?: string;
+  action?: string;
+  targetUserId?: string;
+  page?: string;
 }
 
 function maskEmail(email: string): string {
@@ -75,4 +83,17 @@ export const securityLog = {
 
   storageParseError: (reason: string) =>
     logSecurityEvent('STORAGE_PARSE_ERROR', { reason }),
+
+  // ── Admin events ───────────────────────────────────────────
+  adminAccess: (adminId: string, page: string) =>
+    logSecurityEvent('ADMIN_ACCESS', { adminId, page }),
+
+  adminUserModified: (adminId: string, action: string, targetUserId: string) =>
+    logSecurityEvent('ADMIN_USER_MODIFIED', { adminId, action, targetUserId }),
+
+  adminFinanceViewed: (adminId: string, targetUserId: string) =>
+    logSecurityEvent('ADMIN_FINANCE_VIEWED', { adminId, targetUserId }),
+
+  adminUnauthorizedAccess: (email: string, page: string) =>
+    logSecurityEvent('ADMIN_UNAUTHORIZED_ACCESS', { email: maskEmail(email), page }),
 };

@@ -12,10 +12,13 @@ const SESSION_LAST_ACTIVE_KEY = 'session_last_active';
 
 // ── Schema for validating stored user data on hydrate ──────────
 // Prevents crashes from corrupted or tampered storage values.
+// SECURITY: The role field is validated here but MUST originate from
+// the server. The client never self-assigns roles.
 const storedUserSchema = z.object({
   id: z.string(),
   email: z.string().email(),
   name: z.string(),
+  role: z.enum(['admin', 'user']).catch('user'),
   studentId: z.string().optional(),
   program: z.string().optional(),
   enrollmentYear: z.number().optional(),
@@ -26,6 +29,7 @@ const storedUserSchema = z.object({
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
+  isAdmin: boolean;
   isLoading: boolean;
   error: string | null;
 
@@ -80,6 +84,7 @@ async function isSessionExpired(): Promise<boolean> {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
+  isAdmin: false,
   isLoading: true,
   error: null,
 
@@ -109,9 +114,11 @@ export const useAuthStore = create<AuthState>((set) => ({
           return;
         }
 
+        const user = parsed.data as User;
         set({
-          user: parsed.data as User,
+          user,
           isAuthenticated: true,
+          isAdmin: user.role === 'admin',
           isLoading: false,
         });
         return;
@@ -134,7 +141,12 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const res = await authApi.login(data);
       await persistSession(res.accessToken, res.refreshToken, res.user);
-      set({ user: res.user, isAuthenticated: true, isLoading: false });
+      set({
+        user: res.user,
+        isAuthenticated: true,
+        isAdmin: res.user.role === 'admin',
+        isLoading: false,
+      });
       securityLog.loginSuccess(data.email);
     } catch (err) {
       const msg = getErrorMessage(err, 'Login failed. Please try again.');
@@ -148,7 +160,12 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const res = await authApi.register(data);
       await persistSession(res.accessToken, res.refreshToken, res.user);
-      set({ user: res.user, isAuthenticated: true, isLoading: false });
+      set({
+        user: res.user,
+        isAuthenticated: true,
+        isAdmin: res.user.role === 'admin',
+        isLoading: false,
+      });
       securityLog.registerSuccess(data.email);
     } catch (err) {
       const msg = getErrorMessage(err, 'Registration failed. Please try again.');
@@ -165,7 +182,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       // Logout API failure is non-critical — still clear local session
     } finally {
       await clearSession();
-      set({ user: null, isAuthenticated: false, isLoading: false, error: null });
+      set({ user: null, isAuthenticated: false, isAdmin: false, isLoading: false, error: null });
       securityLog.logout();
     }
   },

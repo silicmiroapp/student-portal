@@ -1,11 +1,13 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAuthStore } from '@/features/auth/store';
 import { useTheme } from '@/hooks/useTheme';
 import { SHADOWS } from '@/constants/theme';
 
 export default function MainLayout() {
   const insets = useSafeAreaInsets();
+  const { isAdmin } = useAuthStore();
   const { colors, fontSize, fonts, reduceMotion } = useTheme();
 
   return (
@@ -61,6 +63,17 @@ export default function MainLayout() {
           title: 'Finance',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="wallet-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="admin"
+        options={{
+          title: 'Admin',
+          // Hide admin tab from non-admin users
+          href: isAdmin ? undefined : null,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="shield-checkmark-outline" size={size} color={color} />
           ),
         }}
       />

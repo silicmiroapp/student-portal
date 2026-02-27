@@ -1,7 +1,10 @@
+export type UserRole = 'admin' | 'user';
+
 export interface User {
   id: string;
   email: string;
   name: string;
+  role: UserRole;
   studentId?: string;
   program?: string;
   enrollmentYear?: number;
