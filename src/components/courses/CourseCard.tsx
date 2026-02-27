@@ -2,8 +2,9 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Card } from '@/components/ui/Card';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Badge } from '@/components/ui/Badge';
+import { useTheme } from '@/hooks/useTheme';
 import type { Enrollment } from '@/types/courses';
-import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS, FONTS } from '@/constants/theme';
+import { SPACING, BORDER_RADIUS, FONTS } from '@/constants/theme';
 
 interface CourseCardProps {
   enrollment: Enrollment;
@@ -11,23 +12,32 @@ interface CourseCardProps {
 }
 
 export function CourseCard({ enrollment, onPress }: CourseCardProps) {
+  const { colors, fontSize } = useTheme();
   const { course, progress, grade } = enrollment;
 
   return (
     <Card onPress={onPress} style={styles.card}>
       <View style={styles.header}>
-        <View style={styles.codeContainer}>
-          <Text style={styles.code}>{course.code}</Text>
+        <View style={[styles.codeContainer, { backgroundColor: colors.secondaryLight }]}>
+          <Text style={[styles.code, { color: colors.secondary, fontSize: fontSize.xs }]}>
+            {course.code}
+          </Text>
         </View>
         {grade && <Badge label={grade} variant="success" />}
       </View>
-      <Text style={styles.name} numberOfLines={2}>{course.name}</Text>
-      <Text style={styles.instructor}>{course.instructor}</Text>
+      <Text style={[styles.name, { color: colors.text, fontSize: fontSize.md }]} numberOfLines={2}>
+        {course.name}
+      </Text>
+      <Text style={[styles.instructor, { color: colors.textSecondary, fontSize: fontSize.sm }]}>
+        {course.instructor}
+      </Text>
       <View style={styles.progressRow}>
         <View style={styles.progressBarWrapper}>
           <ProgressBar progress={progress} />
         </View>
-        <Text style={styles.progressText}>{progress}%</Text>
+        <Text style={[styles.progressText, { color: colors.textSecondary, fontSize: fontSize.xs }]}>
+          {progress}%
+        </Text>
       </View>
     </Card>
   );
@@ -44,26 +54,19 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.sm,
   },
   codeContainer: {
-    backgroundColor: COLORS.secondaryLight,
     paddingHorizontal: SPACING.sm,
     paddingVertical: 2,
     borderRadius: BORDER_RADIUS.xs,
   },
   code: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.semiBold,
-    color: COLORS.secondary,
   },
   name: {
-    fontSize: FONT_SIZE.md,
     fontFamily: FONTS.semiBold,
-    color: COLORS.text,
     marginBottom: SPACING.xs,
   },
   instructor: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
     marginBottom: SPACING.md,
   },
   progressRow: {
@@ -75,9 +78,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   progressText: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.semiBold,
-    color: COLORS.textSecondary,
     width: 36,
     textAlign: 'right',
   },

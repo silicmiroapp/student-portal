@@ -1,9 +1,9 @@
 import api from '@/services/api';
+import { ENV } from '@/config/env';
 import { ENDPOINTS } from '@/constants/api';
 import type { Grade, GradeSummary } from '@/types/grades';
 import { MOCK_GRADES, MOCK_GRADE_SUMMARY } from '@/mocks/grades';
 
-const USE_MOCK = true;
 const MOCK_DELAY = 600;
 
 function delay(ms: number): Promise<void> {
@@ -29,4 +29,4 @@ const realApi = {
   },
 };
 
-export const gradesApi = USE_MOCK ? mockApi : realApi;
+export const gradesApi = ENV.USE_MOCK_API ? mockApi : realApi;

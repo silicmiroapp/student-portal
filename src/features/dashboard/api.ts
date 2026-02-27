@@ -1,9 +1,9 @@
 import api from '@/services/api';
+import { ENV } from '@/config/env';
 import { ENDPOINTS } from '@/constants/api';
 import type { DashboardData } from '@/types/dashboard';
 import { MOCK_DASHBOARD } from '@/mocks/dashboard';
 
-const USE_MOCK = true;
 const MOCK_DELAY = 600;
 
 function delay(ms: number): Promise<void> {
@@ -24,4 +24,4 @@ const realApi = {
   },
 };
 
-export const dashboardApi = USE_MOCK ? mockApi : realApi;
+export const dashboardApi = ENV.USE_MOCK_API ? mockApi : realApi;

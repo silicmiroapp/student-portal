@@ -1,7 +1,8 @@
 import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@/hooks/useTheme';
 import type { CourseBlock } from '@/types/courses';
-import { COLORS, SPACING, FONT_SIZE, FONTS } from '@/constants/theme';
+import { SPACING, FONTS } from '@/constants/theme';
 
 interface CourseContentItemProps {
   block: CourseBlock;
@@ -16,6 +17,8 @@ const TYPE_ICONS: Record<CourseBlock['type'], keyof typeof Ionicons.glyphMap> = 
 };
 
 export function CourseContentItem({ block }: CourseContentItemProps) {
+  const { colors, fontSize } = useTheme();
+
   const handlePress = () => {
     if (block.url) {
       Linking.openURL(block.url);
@@ -29,25 +32,30 @@ export function CourseContentItem({ block }: CourseContentItemProps) {
       <Ionicons
         name={TYPE_ICONS[block.type]}
         size={20}
-        color={block.completed ? COLORS.success : COLORS.textSecondary}
+        color={block.completed ? colors.success : colors.textSecondary}
       />
       <View style={styles.content}>
         <Text
-          style={[styles.title, block.completed && styles.completedTitle, block.url && styles.linkTitle]}
+          style={[
+            styles.title,
+            { color: colors.text, fontSize: fontSize.sm },
+            block.completed && { color: colors.textSecondary },
+            block.url && { color: colors.secondary, fontFamily: FONTS.semiBold },
+          ]}
           numberOfLines={1}
         >
           {block.title}
         </Text>
         {block.duration && (
-          <Text style={styles.meta}>
+          <Text style={[styles.meta, { color: colors.textSecondary, fontSize: fontSize.xs }]}>
             {block.duration}{block.url ? ' · YouTube' : ''}
           </Text>
         )}
       </View>
       {block.completed ? (
-        <Ionicons name="checkmark-circle" size={20} color={COLORS.success} />
+        <Ionicons name="checkmark-circle" size={20} color={colors.success} />
       ) : block.url ? (
-        <Ionicons name="open-outline" size={18} color={COLORS.secondary} />
+        <Ionicons name="open-outline" size={18} color={colors.secondary} />
       ) : null}
     </Wrapper>
   );
@@ -64,21 +72,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.regular,
-    color: COLORS.text,
-  },
-  completedTitle: {
-    color: COLORS.textSecondary,
-  },
-  linkTitle: {
-    color: COLORS.secondary,
-    fontFamily: FONTS.semiBold,
   },
   meta: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
     marginTop: 2,
   },
 });

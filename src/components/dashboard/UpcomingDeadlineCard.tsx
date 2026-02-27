@@ -1,7 +1,8 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@/hooks/useTheme';
 import type { CourseDeadline } from '@/types/courses';
-import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS, FONTS } from '@/constants/theme';
+import { SPACING, BORDER_RADIUS, FONTS } from '@/constants/theme';
 
 interface UpcomingDeadlineCardProps {
   deadline: CourseDeadline;
@@ -14,6 +15,8 @@ const TYPE_ICONS: Record<CourseDeadline['type'], keyof typeof Ionicons.glyphMap>
 };
 
 export function UpcomingDeadlineCard({ deadline }: UpcomingDeadlineCardProps) {
+  const { colors, fontSize } = useTheme();
+
   const now = new Date();
   const dueDate = new Date(deadline.dueDate);
   const daysLeft = Math.ceil((dueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
@@ -28,23 +31,32 @@ export function UpcomingDeadlineCard({ deadline }: UpcomingDeadlineCardProps) {
         ? 'Due tomorrow'
         : `${daysLeft} days left`;
 
-  const dueColor = isOverdue ? COLORS.error : isUrgent ? COLORS.warning : COLORS.textSecondary;
+  const dueColor = isOverdue ? colors.error : isUrgent ? colors.warning : colors.textSecondary;
 
   return (
     <View style={styles.container}>
-      <View style={[styles.iconContainer, isOverdue && styles.overdueIcon]}>
+      <View
+        style={[
+          styles.iconContainer,
+          { backgroundColor: isOverdue ? colors.errorLight : colors.secondaryLight },
+        ]}
+      >
         <Ionicons
           name={TYPE_ICONS[deadline.type]}
           size={18}
-          color={isOverdue ? COLORS.error : COLORS.secondary}
+          color={isOverdue ? colors.error : colors.secondary}
         />
       </View>
       <View style={styles.content}>
-        <Text style={styles.title} numberOfLines={1}>{deadline.title}</Text>
-        <Text style={styles.course} numberOfLines={1}>{deadline.courseName}</Text>
+        <Text style={[styles.title, { color: colors.text, fontSize: fontSize.sm }]} numberOfLines={1}>
+          {deadline.title}
+        </Text>
+        <Text style={[styles.course, { color: colors.textSecondary, fontSize: fontSize.xs }]} numberOfLines={1}>
+          {deadline.courseName}
+        </Text>
       </View>
       <View style={styles.dueInfo}>
-        <Text style={[styles.dueText, { color: dueColor }]}>{dueLabel}</Text>
+        <Text style={[styles.dueText, { color: dueColor, fontSize: fontSize.xs }]}>{dueLabel}</Text>
       </View>
     </View>
   );
@@ -61,32 +73,23 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: BORDER_RADIUS.md,
-    backgroundColor: COLORS.secondaryLight,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  overdueIcon: {
-    backgroundColor: COLORS.errorLight,
   },
   content: {
     flex: 1,
   },
   title: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.semiBold,
-    color: COLORS.text,
   },
   course: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
     marginTop: 2,
   },
   dueInfo: {
     alignItems: 'flex-end',
   },
   dueText: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.semiBold,
   },
 });

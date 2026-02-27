@@ -12,6 +12,6 @@ export const MOCK_DASHBOARD: DashboardData = {
   recentCourses: MOCK_ENROLLMENTS.slice(0, 3),
   upcomingDeadlines: getMockDeadlines().slice(0, 4),
   upcomingExams: MOCK_EXAMS,
-  studentName: 'Marko Petrovic',
+  studentName: 'Demo User',
   program: 'Bachelor of Business Administration',
 };

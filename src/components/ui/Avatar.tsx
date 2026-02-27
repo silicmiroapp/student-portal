@@ -1,5 +1,6 @@
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { COLORS, FONTS, SHADOWS } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
+import { FONTS, SHADOWS } from '@/constants/theme';
 
 interface AvatarProps {
   name: string;
@@ -8,6 +9,7 @@ interface AvatarProps {
 }
 
 export function Avatar({ name, imageUrl, size = 44 }: AvatarProps) {
+  const { colors } = useTheme();
   const letter = name.charAt(0).toUpperCase() || 'U';
   const fontSize = size * 0.4;
 
@@ -15,7 +17,10 @@ export function Avatar({ name, imageUrl, size = 44 }: AvatarProps) {
     return (
       <Image
         source={{ uri: imageUrl }}
-        style={[styles.image, { width: size, height: size, borderRadius: size / 2 }]}
+        style={[
+          styles.image,
+          { width: size, height: size, borderRadius: size / 2, borderColor: colors.textLight },
+        ]}
       />
     );
   }
@@ -24,31 +29,33 @@ export function Avatar({ name, imageUrl, size = 44 }: AvatarProps) {
     <View
       style={[
         styles.circle,
-        { width: size, height: size, borderRadius: size / 2 },
+        {
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: colors.primary,
+          borderColor: colors.textLight,
+        },
       ]}
     >
-      <Text style={[styles.letter, { fontSize }]}>{letter}</Text>
+      <Text style={[styles.letter, { fontSize, color: colors.textLight }]}>{letter}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   circle: {
-    backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: COLORS.textLight,
     ...SHADOWS.sm,
   },
   letter: {
     fontFamily: FONTS.bold,
-    color: COLORS.textLight,
   },
   image: {
     resizeMode: 'cover',
     borderWidth: 2,
-    borderColor: COLORS.textLight,
     ...SHADOWS.sm,
   },
 });

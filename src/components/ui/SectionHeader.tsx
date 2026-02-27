@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { COLORS, SPACING, FONT_SIZE, FONTS } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
+import { SPACING, FONTS } from '@/constants/theme';
 
 interface SectionHeaderProps {
   title: string;
@@ -8,12 +9,16 @@ interface SectionHeaderProps {
 }
 
 export function SectionHeader({ title, actionLabel, onAction }: SectionHeaderProps) {
+  const { colors, fontSize } = useTheme();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={[styles.title, { color: colors.text, fontSize: fontSize.lg }]}>{title}</Text>
       {actionLabel && onAction && (
         <TouchableOpacity onPress={onAction}>
-          <Text style={styles.action}>{actionLabel}</Text>
+          <Text style={[styles.action, { color: colors.secondary, fontSize: fontSize.sm }]}>
+            {actionLabel}
+          </Text>
         </TouchableOpacity>
       )}
     </View>
@@ -28,13 +33,9 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.md,
   },
   title: {
-    fontSize: FONT_SIZE.lg,
     fontFamily: FONTS.bold,
-    color: COLORS.text,
   },
   action: {
-    fontSize: FONT_SIZE.sm,
-    color: COLORS.secondary,
     fontFamily: FONTS.semiBold,
   },
 });

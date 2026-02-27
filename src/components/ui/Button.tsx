@@ -5,7 +5,8 @@ import {
   ActivityIndicator,
   type ViewStyle,
 } from 'react-native';
-import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS, SHADOWS, FONTS } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
+import { SPACING, BORDER_RADIUS, SHADOWS, FONTS } from '@/constants/theme';
 
 interface ButtonProps {
   title: string;
@@ -24,13 +25,23 @@ export function Button({
   disabled = false,
   style,
 }: ButtonProps) {
+  const { colors, fontSize } = useTheme();
   const isDisabled = disabled || isLoading;
+
+  const variantStyles: Record<string, ViewStyle> = {
+    primary: { backgroundColor: colors.primary },
+    secondary: { backgroundColor: colors.secondary },
+    outline: { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: colors.primary },
+  };
+
+  const textColor =
+    variant === 'outline' ? colors.primary : colors.textLight;
 
   return (
     <TouchableOpacity
       style={[
         styles.base,
-        styles[variant],
+        variantStyles[variant],
         isDisabled && styles.disabled,
         style,
       ]}
@@ -39,17 +50,9 @@ export function Button({
       activeOpacity={0.7}
     >
       {isLoading ? (
-        <ActivityIndicator
-          color={variant === 'outline' ? COLORS.primary : COLORS.textLight}
-        />
+        <ActivityIndicator color={textColor} />
       ) : (
-        <Text
-          style={[
-            styles.text,
-            variant === 'outline' && styles.outlineText,
-            variant === 'secondary' && styles.secondaryText,
-          ]}
-        >
+        <Text style={[styles.text, { color: textColor, fontSize: fontSize.md }]}>
           {title}
         </Text>
       )}
@@ -66,30 +69,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.xl,
     ...SHADOWS.sm,
   },
-  primary: {
-    backgroundColor: COLORS.primary,
-  },
-  secondary: {
-    backgroundColor: COLORS.secondary,
-  },
-  outline: {
-    backgroundColor: 'transparent',
-    borderWidth: 1.5,
-    borderColor: COLORS.primary,
-  },
   disabled: {
     opacity: 0.5,
   },
   text: {
-    color: COLORS.textLight,
-    fontSize: FONT_SIZE.md,
     fontFamily: FONTS.semiBold,
     letterSpacing: 0.5,
-  },
-  outlineText: {
-    color: COLORS.primary,
-  },
-  secondaryText: {
-    color: COLORS.textLight,
   },
 });

@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native';
-import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS, FONTS } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
+import { SPACING, BORDER_RADIUS, FONTS } from '@/constants/theme';
 
 type BadgeVariant = 'success' | 'warning' | 'error' | 'info' | 'neutral';
 
@@ -8,20 +9,22 @@ interface BadgeProps {
   variant?: BadgeVariant;
 }
 
-const VARIANT_COLORS: Record<BadgeVariant, { bg: string; text: string }> = {
-  success: { bg: COLORS.successLight, text: COLORS.success },
-  warning: { bg: COLORS.warningLight, text: COLORS.warning },
-  error: { bg: COLORS.errorLight, text: COLORS.error },
-  info: { bg: COLORS.infoLight, text: COLORS.info },
-  neutral: { bg: COLORS.surface, text: COLORS.textSecondary },
-};
-
 export function Badge({ label, variant = 'neutral' }: BadgeProps) {
-  const colors = VARIANT_COLORS[variant];
+  const { colors, fontSize } = useTheme();
+
+  const variantColors: Record<BadgeVariant, { bg: string; text: string }> = {
+    success: { bg: colors.successLight, text: colors.success },
+    warning: { bg: colors.warningLight, text: colors.warning },
+    error: { bg: colors.errorLight, text: colors.error },
+    info: { bg: colors.infoLight, text: colors.info },
+    neutral: { bg: colors.surface, text: colors.textSecondary },
+  };
+
+  const c = variantColors[variant];
 
   return (
-    <View style={[styles.badge, { backgroundColor: colors.bg }]}>
-      <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
+    <View style={[styles.badge, { backgroundColor: c.bg }]}>
+      <Text style={[styles.label, { color: c.text, fontSize: fontSize.xs }]}>{label}</Text>
     </View>
   );
 }
@@ -34,7 +37,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   label: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.semiBold,
   },
 });

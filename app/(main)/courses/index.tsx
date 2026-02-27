@@ -8,13 +8,15 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { useCoursesStore } from '@/features/courses/store';
 import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
+import { useTheme } from '@/hooks/useTheme';
 import type { Enrollment } from '@/types/courses';
-import { COLORS, SPACING, SHADOWS } from '@/constants/theme';
+import { SPACING, SHADOWS } from '@/constants/theme';
 
 export default function CoursesScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { enrollments, isLoading, fetchEnrollments } = useCoursesStore();
+  const { colors } = useTheme();
 
   useEffect(() => {
     fetchEnrollments();
@@ -38,8 +40,8 @@ export default function CoursesScreen() {
   );
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
+    <View style={[styles.container, { paddingTop: insets.top, backgroundColor: colors.surface }]}>
+      <View style={[styles.header, { backgroundColor: colors.background, borderBottomColor: colors.borderLight }]}>
         <SectionHeader title="My Courses" />
       </View>
       <FlatList
@@ -69,14 +71,11 @@ export default function CoursesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.surface,
   },
   header: {
     paddingHorizontal: SPACING.lg,
     paddingVertical: SPACING.md,
-    backgroundColor: COLORS.background,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.borderLight,
     ...SHADOWS.sm,
   },
   list: {

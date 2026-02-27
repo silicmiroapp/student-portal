@@ -9,10 +9,9 @@ import { Badge } from '@/components/ui/Badge';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { CourseContentItem } from '@/components/courses/CourseContentItem';
 import { useCoursesStore } from '@/features/courses/store';
+import { useTheme } from '@/hooks/useTheme';
 import {
-  COLORS,
   SPACING,
-  FONT_SIZE,
   BORDER_RADIUS,
   SHADOWS,
   FONTS,
@@ -23,6 +22,7 @@ export default function CourseDetailScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { selectedCourse, isLoadingDetail, fetchCourseDetail, clearSelectedCourse } = useCoursesStore();
+  const { colors, fontSize } = useTheme();
 
   useEffect(() => {
     if (id) fetchCourseDetail(id);
@@ -36,15 +36,22 @@ export default function CourseDetailScreen() {
   const { course, progress, sections, deadlines } = selectedCourse;
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={[styles.container, { paddingTop: insets.top, backgroundColor: colors.surface }]}>
       {/* Header with back button */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color={COLORS.text} />
+      <View style={[styles.header, { backgroundColor: colors.background, borderBottomColor: colors.borderLight }]}>
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={[styles.backButton, { backgroundColor: colors.surfaceAlt }]}
+        >
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
         <View style={styles.headerInfo}>
-          <Text style={styles.courseCode}>{course.code}</Text>
-          <Text style={styles.courseName} numberOfLines={2}>{course.name}</Text>
+          <Text style={[styles.courseCode, { color: colors.secondary, fontSize: fontSize.xs }]}>
+            {course.code}
+          </Text>
+          <Text style={[styles.courseName, { color: colors.text, fontSize: fontSize.lg }]} numberOfLines={2}>
+            {course.name}
+          </Text>
         </View>
       </View>
 
@@ -55,21 +62,27 @@ export default function CourseDetailScreen() {
       >
         {/* Course Info */}
         <Card style={styles.infoCard}>
-          <Text style={styles.instructor}>
-            <Ionicons name="person-outline" size={14} color={COLORS.textSecondary} />{' '}
+          <Text style={[styles.instructor, { color: colors.textSecondary, fontSize: fontSize.sm }]}>
+            <Ionicons name="person-outline" size={14} color={colors.textSecondary} />{' '}
             {course.instructor}
           </Text>
-          <Text style={styles.description}>{course.description}</Text>
+          <Text style={[styles.description, { color: colors.text, fontSize: fontSize.sm }]}>
+            {course.description}
+          </Text>
         </Card>
 
         {/* Progress */}
         <Card style={styles.progressCard}>
           <View style={styles.progressHeader}>
-            <Text style={styles.progressTitle}>Progress</Text>
-            <Text style={styles.progressPercent}>{progress.percentage}%</Text>
+            <Text style={[styles.progressTitle, { color: colors.text, fontSize: fontSize.md }]}>
+              Progress
+            </Text>
+            <Text style={[styles.progressPercent, { color: colors.secondary, fontSize: fontSize.md }]}>
+              {progress.percentage}%
+            </Text>
           </View>
           <ProgressBar progress={progress.percentage} height={10} />
-          <Text style={styles.progressDetail}>
+          <Text style={[styles.progressDetail, { color: colors.textSecondary, fontSize: fontSize.xs }]}>
             {progress.completedBlocks} of {progress.totalBlocks} items completed
           </Text>
         </Card>
@@ -77,7 +90,9 @@ export default function CourseDetailScreen() {
         {/* Deadlines */}
         {deadlines.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Upcoming Deadlines</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text, fontSize: fontSize.lg }]}>
+              Upcoming Deadlines
+            </Text>
             <Card>
               {deadlines.map((deadline) => (
                 <View key={deadline.id} style={styles.deadlineRow}>
@@ -85,8 +100,10 @@ export default function CourseDetailScreen() {
                     label={deadline.type}
                     variant={deadline.type === 'exam' ? 'error' : deadline.type === 'quiz' ? 'warning' : 'info'}
                   />
-                  <Text style={styles.deadlineTitle}>{deadline.title}</Text>
-                  <Text style={styles.deadlineDate}>
+                  <Text style={[styles.deadlineTitle, { color: colors.text, fontSize: fontSize.sm }]}>
+                    {deadline.title}
+                  </Text>
+                  <Text style={[styles.deadlineDate, { color: colors.textSecondary, fontSize: fontSize.xs }]}>
                     {new Date(deadline.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   </Text>
                 </View>
@@ -97,14 +114,20 @@ export default function CourseDetailScreen() {
 
         {/* Content Sections */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Course Content</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text, fontSize: fontSize.lg }]}>
+            Course Content
+          </Text>
           {sections.map((section) => (
             <Card key={section.id} style={styles.contentSection}>
-              <Text style={styles.contentSectionTitle}>{section.title}</Text>
+              <Text style={[styles.contentSectionTitle, { color: colors.text, fontSize: fontSize.md }]}>
+                {section.title}
+              </Text>
               {section.blocks.map((block, index) => (
                 <View key={block.id}>
                   <CourseContentItem block={block} />
-                  {index < section.blocks.length - 1 && <View style={styles.divider} />}
+                  {index < section.blocks.length - 1 && (
+                    <View style={[styles.divider, { backgroundColor: colors.borderLight }]} />
+                  )}
                 </View>
               ))}
             </Card>
@@ -120,16 +143,13 @@ export default function CourseDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.surface,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: SPACING.lg,
     paddingVertical: SPACING.md,
-    backgroundColor: COLORS.background,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.borderLight,
     gap: SPACING.sm,
     ...SHADOWS.sm,
   },
@@ -137,7 +157,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: BORDER_RADIUS.full,
-    backgroundColor: COLORS.surfaceAlt,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -145,14 +164,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   courseCode: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.semiBold,
-    color: COLORS.secondary,
   },
   courseName: {
-    fontSize: FONT_SIZE.lg,
     fontFamily: FONTS.bold,
-    color: COLORS.text,
   },
   scroll: {
     flex: 1,
@@ -165,15 +180,11 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.md,
   },
   instructor: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
     marginBottom: SPACING.sm,
   },
   description: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.regular,
-    color: COLORS.text,
     lineHeight: 20,
   },
   progressCard: {
@@ -185,19 +196,13 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.sm,
   },
   progressTitle: {
-    fontSize: FONT_SIZE.md,
     fontFamily: FONTS.semiBold,
-    color: COLORS.text,
   },
   progressPercent: {
-    fontSize: FONT_SIZE.md,
     fontFamily: FONTS.bold,
-    color: COLORS.secondary,
   },
   progressDetail: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
     marginTop: SPACING.sm,
     textAlign: 'center',
   },
@@ -205,9 +210,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.md,
   },
   sectionTitle: {
-    fontSize: FONT_SIZE.lg,
     fontFamily: FONTS.bold,
-    color: COLORS.text,
     marginBottom: SPACING.sm,
   },
   deadlineRow: {
@@ -218,26 +221,19 @@ const styles = StyleSheet.create({
   },
   deadlineTitle: {
     flex: 1,
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.regular,
-    color: COLORS.text,
   },
   deadlineDate: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.semiBold,
-    color: COLORS.textSecondary,
   },
   contentSection: {
     marginBottom: SPACING.sm,
   },
   contentSectionTitle: {
-    fontSize: FONT_SIZE.md,
     fontFamily: FONTS.semiBold,
-    color: COLORS.text,
     marginBottom: SPACING.sm,
   },
   divider: {
     height: 1,
-    backgroundColor: COLORS.borderLight,
   },
 });

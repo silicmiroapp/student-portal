@@ -2,8 +2,9 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Card } from '@/components/ui/Card';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Badge } from '@/components/ui/Badge';
+import { useTheme } from '@/hooks/useTheme';
 import type { GradeSummary, AcademicStatus } from '@/types/grades';
-import { COLORS, SPACING, FONT_SIZE, FONTS } from '@/constants/theme';
+import { SPACING, FONTS } from '@/constants/theme';
 
 interface GradeSummaryCardProps {
   summary: GradeSummary;
@@ -17,6 +18,7 @@ const STANDING_CONFIG: Record<AcademicStatus, { label: string; variant: 'success
 };
 
 export function GradeSummaryCard({ summary }: GradeSummaryCardProps) {
+  const { colors, fontSize } = useTheme();
   const standing = STANDING_CONFIG[summary.academicStanding];
   const creditProgress = summary.totalCredits > 0
     ? (summary.completedCredits / summary.totalCredits) * 100
@@ -26,12 +28,20 @@ export function GradeSummaryCard({ summary }: GradeSummaryCardProps) {
     <Card style={styles.card}>
       <View style={styles.gpaRow}>
         <View style={styles.gpaBlock}>
-          <Text style={styles.gpaLabel}>Cumulative GPA</Text>
-          <Text style={styles.gpaValue}>{summary.cumulativeGPA.toFixed(2)}</Text>
+          <Text style={[styles.gpaLabel, { color: colors.textSecondary, fontSize: fontSize.xs }]}>
+            Cumulative GPA
+          </Text>
+          <Text style={[styles.gpaValue, { color: colors.text, fontSize: fontSize.xl }]}>
+            {summary.cumulativeGPA.toFixed(2)}
+          </Text>
         </View>
         <View style={styles.gpaBlock}>
-          <Text style={styles.gpaLabel}>Semester GPA</Text>
-          <Text style={styles.gpaValue}>{summary.semesterGPA.toFixed(2)}</Text>
+          <Text style={[styles.gpaLabel, { color: colors.textSecondary, fontSize: fontSize.xs }]}>
+            Semester GPA
+          </Text>
+          <Text style={[styles.gpaValue, { color: colors.text, fontSize: fontSize.xl }]}>
+            {summary.semesterGPA.toFixed(2)}
+          </Text>
         </View>
         <View style={styles.gpaBlock}>
           <Badge label={standing.label} variant={standing.variant} />
@@ -40,16 +50,18 @@ export function GradeSummaryCard({ summary }: GradeSummaryCardProps) {
 
       <View style={styles.creditsSection}>
         <View style={styles.creditsHeader}>
-          <Text style={styles.creditsLabel}>Credits Progress</Text>
-          <Text style={styles.creditsValue}>
+          <Text style={[styles.creditsLabel, { color: colors.textSecondary, fontSize: fontSize.sm }]}>
+            Credits Progress
+          </Text>
+          <Text style={[styles.creditsValue, { color: colors.text, fontSize: fontSize.sm }]}>
             {summary.completedCredits} / {summary.totalCredits}
           </Text>
         </View>
-        <ProgressBar progress={creditProgress} color={COLORS.success} />
+        <ProgressBar progress={creditProgress} color={colors.success} />
       </View>
 
       <View style={styles.statsRow}>
-        <Text style={styles.statText}>
+        <Text style={[styles.statText, { color: colors.textSecondary, fontSize: fontSize.sm }]}>
           {summary.passedSubjects} of {summary.totalSubjects} subjects passed
         </Text>
       </View>
@@ -71,15 +83,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   gpaLabel: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
     marginBottom: SPACING.xs,
   },
   gpaValue: {
-    fontSize: FONT_SIZE.xl,
     fontFamily: FONTS.bold,
-    color: COLORS.text,
   },
   creditsSection: {
     marginBottom: SPACING.md,
@@ -90,21 +98,15 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.sm,
   },
   creditsLabel: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
   },
   creditsValue: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.semiBold,
-    color: COLORS.text,
   },
   statsRow: {
     alignItems: 'center',
   },
   statText: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
   },
 });

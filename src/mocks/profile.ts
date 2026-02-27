@@ -3,9 +3,9 @@ import type { StudentProfile } from '@/types/profile';
 export const MOCK_PROFILE: StudentProfile = {
   id: '1',
   studentId: 'BUS-2025-0142',
-  name: 'Marko Petrovic',
-  email: 'demo@student.edu',
-  phone: '+1 (555) 123-4567',
+  name: 'Demo User',
+  email: 'user@student.example',
+  phone: '+1 (555) 000-0000',
   program: 'Bachelor of Business Administration',
   department: 'School of Business',
   enrollmentYear: 2025,

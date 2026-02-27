@@ -8,12 +8,14 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { useGradesStore } from '@/features/grades/store';
 import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
+import { useTheme } from '@/hooks/useTheme';
 import type { Grade } from '@/types/grades';
-import { COLORS, SPACING, SHADOWS } from '@/constants/theme';
+import { SPACING, SHADOWS } from '@/constants/theme';
 
 export default function GradesScreen() {
   const insets = useSafeAreaInsets();
   const { grades, summary, isLoading, fetchGrades } = useGradesStore();
+  const { colors } = useTheme();
 
   useEffect(() => {
     fetchGrades();
@@ -41,8 +43,8 @@ export default function GradesScreen() {
   );
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
+    <View style={[styles.container, { paddingTop: insets.top, backgroundColor: colors.surface }]}>
+      <View style={[styles.header, { backgroundColor: colors.background, borderBottomColor: colors.borderLight }]}>
         <SectionHeader title="My Grades" />
       </View>
       <FlatList
@@ -73,14 +75,11 @@ export default function GradesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.surface,
   },
   header: {
     paddingHorizontal: SPACING.lg,
     paddingVertical: SPACING.md,
-    backgroundColor: COLORS.background,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.borderLight,
     ...SHADOWS.sm,
   },
   list: {

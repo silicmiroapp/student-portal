@@ -1,7 +1,10 @@
-// API configuration — switch BASE_URL when connecting to a real backend
+import { ENV } from '@/config/env';
+
+// API configuration — resolved from environment variables at build time.
+// NEVER hardcode secrets or real URLs here.
 export const API_CONFIG = {
-  BASE_URL: 'https://api.example.com/v1',
-  TIMEOUT: 10000,
+  BASE_URL: ENV.API_BASE_URL,
+  TIMEOUT: ENV.API_TIMEOUT,
 } as const;
 
 export const STORAGE_KEYS = {
@@ -20,9 +23,9 @@ export const ENDPOINTS = {
   DASHBOARD: '/dashboard',
   COURSES: {
     LIST: '/courses',
-    DETAIL: (id: string) => `/courses/${id}`,
-    CONTENT: (id: string) => `/courses/${id}/content`,
-    PROGRESS: (id: string) => `/courses/${id}/progress`,
+    DETAIL: (id: string) => `/courses/${encodeURIComponent(id)}`,
+    CONTENT: (id: string) => `/courses/${encodeURIComponent(id)}/content`,
+    PROGRESS: (id: string) => `/courses/${encodeURIComponent(id)}/progress`,
   },
   GRADES: '/grades',
   PROFILE: '/profile',

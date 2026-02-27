@@ -13,10 +13,9 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useAuthStore } from '@/features/auth/store';
 import { useDashboardStore } from '@/features/dashboard/store';
 import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
+import { useTheme } from '@/hooks/useTheme';
 import {
-  COLORS,
   SPACING,
-  FONT_SIZE,
   BORDER_RADIUS,
   SHADOWS,
   FONTS,
@@ -27,6 +26,7 @@ export default function DashboardScreen() {
   const router = useRouter();
   const { user } = useAuthStore();
   const { data, isLoading, fetchDashboard } = useDashboardStore();
+  const { colors, fontSize } = useTheme();
 
   useEffect(() => {
     fetchDashboard();
@@ -43,9 +43,9 @@ export default function DashboardScreen() {
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={[styles.container, { paddingTop: insets.top, backgroundColor: colors.surface }]}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: colors.background, borderBottomColor: colors.borderLight }]}>
         <View style={styles.headerLeft}>
           <Image
             source={require('../../assets/NewLOGO2022_BlackRed.png')}
@@ -53,10 +53,16 @@ export default function DashboardScreen() {
             resizeMode="contain"
           />
           <View>
-            <Text style={styles.greeting}>Good {getGreeting()},</Text>
-            <Text style={styles.userName}>{user?.name ?? 'Student'}</Text>
+            <Text style={[styles.greeting, { color: colors.textSecondary, fontSize: fontSize.sm }]}>
+              Good {getGreeting()},
+            </Text>
+            <Text style={[styles.userName, { color: colors.text, fontSize: fontSize.xl }]}>
+              {user?.name ?? 'Student'}
+            </Text>
             {user?.program && (
-              <Text style={styles.program}>{user.program}</Text>
+              <Text style={[styles.program, { color: colors.textSecondary, fontSize: fontSize.xs }]}>
+                {user.program}
+              </Text>
             )}
           </View>
         </View>
@@ -95,12 +101,16 @@ export default function DashboardScreen() {
               >
                 <View style={styles.courseRow}>
                   <View style={styles.courseInfo}>
-                    <Text style={styles.courseCode}>{enrollment.course.code}</Text>
-                    <Text style={styles.courseName} numberOfLines={1}>
+                    <Text style={[styles.courseCode, { color: colors.secondary, fontSize: fontSize.xs }]}>
+                      {enrollment.course.code}
+                    </Text>
+                    <Text style={[styles.courseName, { color: colors.text, fontSize: fontSize.sm }]} numberOfLines={1}>
                       {enrollment.course.name}
                     </Text>
                   </View>
-                  <Text style={styles.courseProgress}>{enrollment.progress}%</Text>
+                  <Text style={[styles.courseProgress, { color: colors.textSecondary, fontSize: fontSize.sm }]}>
+                    {enrollment.progress}%
+                  </Text>
                 </View>
                 <ProgressBar progress={enrollment.progress} height={6} />
               </Card>
@@ -117,7 +127,7 @@ export default function DashboardScreen() {
                 <View key={deadline.id}>
                   <UpcomingDeadlineCard deadline={deadline} />
                   {index < data.upcomingDeadlines.length - 1 && (
-                    <View style={styles.divider} />
+                    <View style={[styles.divider, { backgroundColor: colors.borderLight }]} />
                   )}
                 </View>
               ))}
@@ -133,19 +143,23 @@ export default function DashboardScreen() {
               {data.upcomingExams.map((exam, index) => (
                 <View key={exam.id}>
                   <View style={styles.examRow}>
-                    <View style={styles.examIconContainer}>
-                      <Ionicons name="school-outline" size={18} color={COLORS.warning} />
+                    <View style={[styles.examIconContainer, { backgroundColor: colors.warningLight }]}>
+                      <Ionicons name="school-outline" size={18} color={colors.warning} />
                     </View>
                     <View style={styles.examInfo}>
-                      <Text style={styles.examSubject}>{exam.subjectName}</Text>
-                      <Text style={styles.examMeta}>
+                      <Text style={[styles.examSubject, { color: colors.text, fontSize: fontSize.sm }]}>
+                        {exam.subjectName}
+                      </Text>
+                      <Text style={[styles.examMeta, { color: colors.textSecondary, fontSize: fontSize.xs }]}>
                         {formatDate(exam.date)} · {exam.startTime} - {exam.endTime}
                       </Text>
-                      <Text style={styles.examLocation}>{exam.location}</Text>
+                      <Text style={[styles.examLocation, { color: colors.textSecondary, fontSize: fontSize.xs }]}>
+                        {exam.location}
+                      </Text>
                     </View>
                   </View>
                   {index < data.upcomingExams.length - 1 && (
-                    <View style={styles.divider} />
+                    <View style={[styles.divider, { backgroundColor: colors.borderLight }]} />
                   )}
                 </View>
               ))}
@@ -174,7 +188,6 @@ function formatDate(dateStr: string): string {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.surface,
   },
   header: {
     flexDirection: 'row',
@@ -182,9 +195,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: SPACING.lg,
     paddingVertical: SPACING.md,
-    backgroundColor: COLORS.background,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.borderLight,
     ...SHADOWS.sm,
   },
   headerLeft: {
@@ -197,19 +208,13 @@ const styles = StyleSheet.create({
     height: 28,
   },
   greeting: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
   },
   userName: {
-    fontSize: FONT_SIZE.xl,
     fontFamily: FONTS.bold,
-    color: COLORS.text,
   },
   program: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
     marginTop: 2,
   },
   scroll: {
@@ -236,24 +241,17 @@ const styles = StyleSheet.create({
     marginRight: SPACING.sm,
   },
   courseCode: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.semiBold,
-    color: COLORS.secondary,
   },
   courseName: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.semiBold,
-    color: COLORS.text,
     marginTop: 2,
   },
   courseProgress: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.semiBold,
-    color: COLORS.textSecondary,
   },
   divider: {
     height: 1,
-    backgroundColor: COLORS.borderLight,
   },
   examRow: {
     flexDirection: 'row',
@@ -265,7 +263,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: BORDER_RADIUS.md,
-    backgroundColor: COLORS.warningLight,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -273,20 +270,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   examSubject: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.semiBold,
-    color: COLORS.text,
   },
   examMeta: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
     marginTop: 2,
   },
   examLocation: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
     marginTop: 1,
   },
 });

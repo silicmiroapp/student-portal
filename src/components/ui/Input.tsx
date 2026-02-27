@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   type TextInputProps,
 } from 'react-native';
-import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS, FONTS } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
+import { SPACING, BORDER_RADIUS, FONTS } from '@/constants/theme';
 
 interface InputProps extends Omit<TextInputProps, 'onChange'> {
   label: string;
@@ -24,14 +25,21 @@ export function Input({
   ...props
 }: InputProps) {
   const [isSecure, setIsSecure] = useState(isPassword);
+  const { colors, fontSize } = useTheme();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
-      <View style={[styles.inputWrapper, error && styles.inputError]}>
+      <Text style={[styles.label, { color: colors.text, fontSize: fontSize.sm }]}>{label}</Text>
+      <View
+        style={[
+          styles.inputWrapper,
+          { backgroundColor: colors.inputBackground, borderColor: colors.border },
+          error && { borderColor: colors.error },
+        ]}
+      >
         <TextInput
-          style={[styles.input, style]}
-          placeholderTextColor={COLORS.textSecondary}
+          style={[styles.input, { color: colors.text, fontSize: fontSize.md }, style]}
+          placeholderTextColor={colors.textSecondary}
           secureTextEntry={isSecure}
           autoCapitalize="none"
           {...props}
@@ -41,13 +49,17 @@ export function Input({
             onPress={() => setIsSecure(!isSecure)}
             style={styles.toggle}
           >
-            <Text style={styles.toggleText}>
+            <Text style={[styles.toggleText, { color: colors.secondary, fontSize: fontSize.sm }]}>
               {isSecure ? 'Show' : 'Hide'}
             </Text>
           </TouchableOpacity>
         )}
       </View>
-      {error && <Text style={styles.error}>{error}</Text>}
+      {error && (
+        <Text style={[styles.error, { color: colors.error, fontSize: fontSize.xs }]}>
+          {error}
+        </Text>
+      )}
     </View>
   );
 }
@@ -57,41 +69,28 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.lg,
   },
   label: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.semiBold,
-    color: COLORS.text,
     marginBottom: SPACING.sm,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.inputBackground,
     borderRadius: BORDER_RADIUS.md,
     borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  inputError: {
-    borderColor: COLORS.error,
   },
   input: {
     flex: 1,
     height: 50,
     paddingHorizontal: SPACING.md,
-    fontSize: FONT_SIZE.md,
     fontFamily: FONTS.regular,
-    color: COLORS.text,
   },
   toggle: {
     paddingHorizontal: SPACING.md,
   },
   toggleText: {
-    color: COLORS.secondary,
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.semiBold,
   },
   error: {
-    color: COLORS.error,
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.regular,
     marginTop: SPACING.xs,
   },

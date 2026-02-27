@@ -1,9 +1,9 @@
 import api from '@/services/api';
+import { ENV } from '@/config/env';
 import { ENDPOINTS } from '@/constants/api';
 import type { ExamSchedule } from '@/types/grades';
 import { MOCK_EXAMS } from '@/mocks/grades';
 
-const USE_MOCK = true;
 const MOCK_DELAY = 600;
 
 function delay(ms: number): Promise<void> {
@@ -24,4 +24,4 @@ const realApi = {
   },
 };
 
-export const scheduleApi = USE_MOCK ? mockApi : realApi;
+export const scheduleApi = ENV.USE_MOCK_API ? mockApi : realApi;

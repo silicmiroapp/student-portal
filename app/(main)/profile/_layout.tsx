@@ -1,12 +1,15 @@
 import { Stack } from 'expo-router';
-import { COLORS } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 
 export default function ProfileLayout() {
+  const { colors, reduceMotion } = useTheme();
+
   return (
     <Stack
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: COLORS.background },
+        contentStyle: { backgroundColor: colors.background },
+        animation: reduceMotion ? 'none' : 'slide_from_right',
       }}
     />
   );

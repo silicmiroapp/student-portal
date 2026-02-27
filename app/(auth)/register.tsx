@@ -14,14 +14,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useAuthStore } from '@/features/auth/store';
+import { useTheme } from '@/hooks/useTheme';
 import {
   registerSchema,
   type RegisterFormData,
 } from '@/features/auth/validation';
 import {
-  COLORS,
   SPACING,
-  FONT_SIZE,
   BORDER_RADIUS,
   FONTS,
 } from '@/constants/theme';
@@ -30,6 +29,7 @@ export default function RegisterScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { register, isLoading, error, clearError } = useAuthStore();
+  const { colors, fontSize } = useTheme();
 
   const {
     control,
@@ -56,7 +56,7 @@ export default function RegisterScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.flex}
+      style={[styles.flex, { backgroundColor: colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView
@@ -69,13 +69,17 @@ export default function RegisterScreen() {
             onPress={() => router.back()}
             style={styles.backButton}
           >
-            <Text style={styles.backText}>← Back</Text>
+            <Text style={[styles.backText, { color: colors.secondary, fontSize: fontSize.md }]}>
+              ← Back
+            </Text>
           </TouchableOpacity>
 
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>
+            <Text style={[styles.title, { color: colors.text, fontSize: fontSize.xxl }]}>
+              Create Account
+            </Text>
+            <Text style={[styles.subtitle, { color: colors.textSecondary, fontSize: fontSize.md }]}>
               Fill in the details to get started
             </Text>
           </View>
@@ -83,8 +87,10 @@ export default function RegisterScreen() {
           {/* Form */}
           <View style={styles.form}>
             {error && (
-              <View style={styles.errorBanner}>
-                <Text style={styles.errorBannerText}>{error}</Text>
+              <View style={[styles.errorBanner, { backgroundColor: colors.errorLight, borderColor: colors.errorBorder }]}>
+                <Text style={[styles.errorBannerText, { color: colors.error, fontSize: fontSize.sm }]}>
+                  {error}
+                </Text>
               </View>
             )}
 
@@ -165,9 +171,13 @@ export default function RegisterScreen() {
 
           {/* Footer */}
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Already have an account?</Text>
+            <Text style={[styles.footerText, { color: colors.textSecondary, fontSize: fontSize.sm }]}>
+              Already have an account?
+            </Text>
             <TouchableOpacity onPress={() => router.back()}>
-              <Text style={styles.footerLink}> Sign In</Text>
+              <Text style={[styles.footerLink, { color: colors.secondary, fontSize: fontSize.sm }]}>
+                {' '}Sign In
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -179,7 +189,6 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
-    backgroundColor: COLORS.background,
   },
   scrollContent: {
     flexGrow: 1,
@@ -197,8 +206,6 @@ const styles = StyleSheet.create({
     padding: SPACING.xs,
   },
   backText: {
-    fontSize: FONT_SIZE.md,
-    color: COLORS.secondary,
     fontFamily: FONTS.semiBold,
   },
   header: {
@@ -206,30 +213,22 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.xxl,
   },
   title: {
-    fontSize: FONT_SIZE.xxl,
     fontFamily: FONTS.bold,
-    color: COLORS.text,
     marginBottom: SPACING.xs,
   },
   subtitle: {
-    fontSize: FONT_SIZE.md,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
   },
   form: {
     marginBottom: SPACING.xl,
   },
   errorBanner: {
-    backgroundColor: COLORS.errorLight,
     borderWidth: 1,
-    borderColor: COLORS.errorBorder,
     borderRadius: BORDER_RADIUS.sm,
     padding: SPACING.sm,
     marginBottom: SPACING.md,
   },
   errorBannerText: {
-    color: COLORS.error,
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.regular,
     textAlign: 'center',
   },
@@ -242,13 +241,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerText: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
   },
   footerLink: {
-    fontSize: FONT_SIZE.sm,
-    color: COLORS.secondary,
     fontFamily: FONTS.semiBold,
   },
 });

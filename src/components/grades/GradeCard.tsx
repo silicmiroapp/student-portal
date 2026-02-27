@@ -1,8 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
+import { useTheme } from '@/hooks/useTheme';
 import type { Grade } from '@/types/grades';
-import { COLORS, SPACING, FONT_SIZE, BORDER_RADIUS, FONTS } from '@/constants/theme';
+import { SPACING, BORDER_RADIUS, FONTS } from '@/constants/theme';
 
 interface GradeCardProps {
   grade: Grade;
@@ -16,17 +17,24 @@ const STATUS_CONFIG: Record<Grade['status'], { label: string; variant: 'success'
 };
 
 export function GradeCard({ grade }: GradeCardProps) {
+  const { colors, fontSize } = useTheme();
   const config = STATUS_CONFIG[grade.status];
 
   return (
     <Card style={styles.card}>
       <View style={styles.row}>
-        <View style={styles.gradeCircle}>
-          <Text style={styles.gradeLetter}>{grade.letterGrade}</Text>
+        <View style={[styles.gradeCircle, { backgroundColor: colors.surface, borderColor: colors.secondary }]}>
+          <Text style={[styles.gradeLetter, { color: colors.secondary, fontSize: fontSize.md }]}>
+            {grade.letterGrade}
+          </Text>
         </View>
         <View style={styles.info}>
-          <Text style={styles.name} numberOfLines={1}>{grade.subject.name}</Text>
-          <Text style={styles.code}>{grade.subject.code} · {grade.subject.credits} credits</Text>
+          <Text style={[styles.name, { color: colors.text, fontSize: fontSize.sm }]} numberOfLines={1}>
+            {grade.subject.name}
+          </Text>
+          <Text style={[styles.code, { color: colors.textSecondary, fontSize: fontSize.xs }]}>
+            {grade.subject.code} · {grade.subject.credits} credits
+          </Text>
         </View>
         <Badge label={config.label} variant={config.variant} />
       </View>
@@ -47,29 +55,21 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: BORDER_RADIUS.full,
-    backgroundColor: COLORS.surface,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: COLORS.secondary,
   },
   gradeLetter: {
-    fontSize: FONT_SIZE.md,
     fontFamily: FONTS.bold,
-    color: COLORS.secondary,
   },
   info: {
     flex: 1,
   },
   name: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.semiBold,
-    color: COLORS.text,
   },
   code: {
-    fontSize: FONT_SIZE.xs,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
     marginTop: 2,
   },
 });

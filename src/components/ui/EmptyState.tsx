@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, FONT_SIZE, FONTS } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
+import { SPACING, FONTS } from '@/constants/theme';
 
 interface EmptyStateProps {
   icon?: keyof typeof Ionicons.glyphMap;
@@ -9,11 +10,15 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ icon = 'folder-open-outline', title, message }: EmptyStateProps) {
+  const { colors, fontSize } = useTheme();
+
   return (
     <View style={styles.container}>
-      <Ionicons name={icon} size={56} color={COLORS.border} />
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.message}>{message}</Text>
+      <Ionicons name={icon} size={56} color={colors.border} />
+      <Text style={[styles.title, { color: colors.text, fontSize: fontSize.lg }]}>{title}</Text>
+      <Text style={[styles.message, { color: colors.textSecondary, fontSize: fontSize.sm }]}>
+        {message}
+      </Text>
     </View>
   );
 }
@@ -27,16 +32,12 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.xxl,
   },
   title: {
-    fontSize: FONT_SIZE.lg,
     fontFamily: FONTS.semiBold,
-    color: COLORS.text,
     marginTop: SPACING.md,
     textAlign: 'center',
   },
   message: {
-    fontSize: FONT_SIZE.sm,
     fontFamily: FONTS.regular,
-    color: COLORS.textSecondary,
     marginTop: SPACING.sm,
     textAlign: 'center',
     lineHeight: 20,
