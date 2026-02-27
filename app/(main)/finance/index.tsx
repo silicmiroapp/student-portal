@@ -42,7 +42,11 @@ export default function FinanceScreen() {
     fetchFinancePlan(true);
   }, [fetchFinancePlan]);
 
-  useRefreshOnFocus(() => fetchFinancePlan(true));
+  const refreshFinance = useCallback(() => {
+    fetchFinancePlan(true);
+  }, [fetchFinancePlan]);
+
+  useRefreshOnFocus(refreshFinance);
 
   const onRefresh = useCallback(() => {
     fetchFinancePlan(true);
