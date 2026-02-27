@@ -32,4 +32,10 @@ export const ENDPOINTS = {
   SCHEDULE: {
     EXAMS: '/schedule/exams',
   },
+  FINANCE: {
+    PLAN: '/finance/plan',
+    SUMMARY: '/finance/summary',
+    PAY: (installmentId: string) =>
+      `/finance/installments/${encodeURIComponent(installmentId)}/pay`,
+  },
 } as const;

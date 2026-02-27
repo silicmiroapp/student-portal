@@ -12,6 +12,8 @@ import { Card } from '@/components/ui/Card';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useAuthStore } from '@/features/auth/store';
 import { useDashboardStore } from '@/features/dashboard/store';
+import { useFinanceStore } from '@/features/finance/store';
+import { PaymentNotificationBanner } from '@/components/finance/PaymentNotificationBanner';
 import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
 import { useTheme } from '@/hooks/useTheme';
 import {
@@ -26,11 +28,13 @@ export default function DashboardScreen() {
   const router = useRouter();
   const { user } = useAuthStore();
   const { data, isLoading, fetchDashboard } = useDashboardStore();
+  const { summary: financeSummary, fetchSummary: fetchFinanceSummary } = useFinanceStore();
   const { colors, fontSize } = useTheme();
 
   useEffect(() => {
     fetchDashboard();
-  }, [fetchDashboard]);
+    fetchFinanceSummary();
+  }, [fetchDashboard, fetchFinanceSummary]);
 
   useRefreshOnFocus(fetchDashboard);
 
@@ -82,6 +86,16 @@ export default function DashboardScreen() {
           <View style={styles.section}>
             <SectionHeader title="Overview" />
             <QuickStatsRow stats={data.stats} />
+          </View>
+        )}
+
+        {/* Payment Notification */}
+        {financeSummary && (financeSummary.overdueCount > 0 || financeSummary.nextDueAmount) && (
+          <View style={styles.section}>
+            <PaymentNotificationBanner
+              summary={financeSummary}
+              onPress={() => router.push('/(main)/finance')}
+            />
           </View>
         )}
 
