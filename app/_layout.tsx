@@ -6,12 +6,25 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts, OpenSans_400Regular, OpenSans_600SemiBold, OpenSans_700Bold } from '@expo-google-fonts/open-sans';
 import { useAuthStore } from '@/features/auth/store';
 import { useSettingsStore } from '@/features/settings/store';
+import { useNotificationStore } from '@/features/notifications/store';
 import { useTheme } from '@/hooks/useTheme';
+import { NotificationToast } from '@/components/notifications/NotificationToast';
+import {
+  addForegroundListener,
+  addTapListener,
+  getLastNotificationResponse,
+  handleNotificationTap,
+} from '@/services/pushNotifications';
 
 // Root layout — wraps the entire app with providers and handles auth routing
 export default function RootLayout() {
   const { isAuthenticated, isLoading, hydrate, touchSession } = useAuthStore();
   const { isHydrated: settingsHydrated, hydrate: hydrateSettings } = useSettingsStore();
+  const {
+    registerForPush,
+    fetchUnreadCount,
+    showForegroundNotification,
+  } = useNotificationStore();
   const { colors, isDark } = useTheme();
   const segments = useSegments();
   const router = useRouter();
@@ -26,6 +39,41 @@ export default function RootLayout() {
     hydrate();
     hydrateSettings();
   }, [hydrate, hydrateSettings]);
+
+  // ── Push notification registration + handlers ───────────
+  useEffect(() => {
+    if (!isAuthenticated || isLoading) return;
+
+    // Register device for push notifications
+    registerForPush();
+    // Fetch initial unread count for badge
+    fetchUnreadCount();
+
+    // Foreground notification handler — show in-app toast
+    const foregroundSub = addForegroundListener((notification) => {
+      const { title, body } = notification.request.content;
+      showForegroundNotification(
+        title ?? 'New Notification',
+        body ?? '',
+        notification.request.content.data
+      );
+      // Refresh unread count
+      fetchUnreadCount();
+    });
+
+    // Notification tap handler — navigate via deep link
+    const tapSub = addTapListener();
+
+    // Handle cold-start tap (app was killed when user tapped notification)
+    getLastNotificationResponse().then((response) => {
+      if (response) handleNotificationTap(response);
+    });
+
+    return () => {
+      foregroundSub.remove();
+      tapSub.remove();
+    };
+  }, [isAuthenticated, isLoading]);
 
   // Keep session alive — update last-active timestamp when app returns to foreground
   const appState = useRef(AppState.currentState);
@@ -87,6 +135,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <StatusBar style={isDark ? 'light' : 'dark'} />
       <Slot />
+      <NotificationToast />
     </SafeAreaProvider>
   );
 }

@@ -39,6 +39,9 @@ export const ENV = {
 
   /** When true, enables verbose security logging to console */
   ENABLE_SECURITY_LOG: getBoolEnvVar('ENABLE_SECURITY_LOG', __DEV__),
+
+  /** Expo project ID for push notifications — required for getExpoPushTokenAsync */
+  EXPO_PROJECT_ID: getEnvVar('EXPO_PROJECT_ID', ''),
 } as const;
 
 // ── Runtime safety checks ──────────────────────────────────────────────

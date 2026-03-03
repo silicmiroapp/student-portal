@@ -32,9 +32,12 @@ export const Permission = {
   LOGS_VIEW_ROLE_CHANGES:  'logs.view_role_changes',
 
   // ── Communication ────────────────────────────────────────
-  COMM_SEND_PUSH:          'communication.send_push',
-  COMM_SEND_ANNOUNCEMENT:  'communication.send_announcement',
-  COMM_SEND_DIRECT_MSG:    'communication.send_direct_message',
+  COMM_SEND_PUSH:               'communication.send_push',
+  COMM_SEND_ANNOUNCEMENT:       'communication.send_announcement',
+  COMM_SEND_ANNOUNCEMENT_ALL:   'communication.send_announcement_all',
+  COMM_SCHEDULE_ANNOUNCEMENT:   'communication.schedule_announcement',
+  COMM_MANAGE_ANNOUNCEMENT:     'communication.manage_announcement',
+  COMM_SEND_DIRECT_MSG:         'communication.send_direct_message',
 
   // ── System Controls (SuperAdmin only) ────────────────────
   SYSTEM_MANAGE_SETTINGS:  'system.manage_settings',
@@ -112,6 +115,9 @@ export const ROLE_DEFINITIONS: Record<UserRole, RoleDefinition> = {
       // Communication (full)
       Permission.COMM_SEND_PUSH,
       Permission.COMM_SEND_ANNOUNCEMENT,
+      Permission.COMM_SEND_ANNOUNCEMENT_ALL,
+      Permission.COMM_SCHEDULE_ANNOUNCEMENT,
+      Permission.COMM_MANAGE_ANNOUNCEMENT,
       Permission.COMM_SEND_DIRECT_MSG,
 
       // Finance (view only)
@@ -172,6 +178,9 @@ export type AuditAction =
   | 'security.password_policy_changed'
   | 'communication.push_sent'
   | 'communication.announcement_sent'
+  | 'communication.announcement_scheduled'
+  | 'communication.announcement_cancelled'
+  | 'communication.announcement_updated'
   | 'communication.direct_message_sent'
   | 'system.settings_changed'
   | 'system.feature_flag_toggled'

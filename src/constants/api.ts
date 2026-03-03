@@ -11,6 +11,8 @@ export const STORAGE_KEYS = {
   ACCESS_TOKEN: 'access_token',
   REFRESH_TOKEN: 'refresh_token',
   USER_DATA: 'user_data',
+  PUSH_TOKEN: 'push_token',
+  DEVICE_REGISTRATION_ID: 'device_registration_id',
 } as const;
 
 export const ENDPOINTS = {
@@ -63,14 +65,34 @@ export const ENDPOINTS = {
     STUDENT_FINANCE: (studentId: string) =>
       `/admin/finance/${encodeURIComponent(studentId)}`,
 
-    // Communication
+    // Communication (legacy)
     SEND_NOTIFICATION: '/admin/notifications/send',
-    SEND_ANNOUNCEMENT: '/admin/announcements/send',
     SEND_DIRECT_MESSAGE: '/admin/messages/send',
+
+    // Announcements
+    ANNOUNCEMENTS: '/admin/announcements',
+    ANNOUNCEMENT_DETAIL: (id: string) =>
+      `/admin/announcements/${encodeURIComponent(id)}`,
+    NOTIFICATION_STATS: '/admin/notifications/stats',
 
     // System (SuperAdmin only)
     SYSTEM_SETTINGS: '/admin/system/settings',
     FEATURE_FLAGS: '/admin/system/feature-flags',
     MAINTENANCE_MODE: '/admin/system/maintenance',
+  },
+
+  // ── Notifications (student-facing) ──────────────────────
+  NOTIFICATIONS: {
+    REGISTER_DEVICE: '/notifications/devices/register',
+    UNREGISTER_DEVICE: (deviceId: string) =>
+      `/notifications/devices/${encodeURIComponent(deviceId)}`,
+    LIST: '/notifications',
+    UNREAD_COUNT: '/notifications/unread-count',
+    MARK_READ: (id: string) =>
+      `/notifications/${encodeURIComponent(id)}/read`,
+    MARK_ALL_READ: '/notifications/mark-all-read',
+    DISMISS: (id: string) =>
+      `/notifications/${encodeURIComponent(id)}`,
+    PREFERENCES: '/notifications/preferences',
   },
 } as const;

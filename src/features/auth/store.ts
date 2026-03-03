@@ -205,17 +205,25 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       await authApi.logout();
     } catch {
       // Logout API failure is non-critical — still clear local session
-    } finally {
-      await clearSession();
-      set({
-        user: null,
-        isAuthenticated: false,
-        isAdmin: false,
-        isLoading: false,
-        error: null,
-      });
-      securityLog.logout();
     }
+
+    // Unregister push token — import dynamically to avoid circular deps
+    try {
+      const { useNotificationStore } = await import('@/features/notifications/store');
+      await useNotificationStore.getState().unregisterDevice();
+    } catch {
+      // Non-critical — token will be invalidated server-side eventually
+    }
+
+    await clearSession();
+    set({
+      user: null,
+      isAuthenticated: false,
+      isAdmin: false,
+      isLoading: false,
+      error: null,
+    });
+    securityLog.logout();
   },
 
   clearError: () => set({ error: null }),

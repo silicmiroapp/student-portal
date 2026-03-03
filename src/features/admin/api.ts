@@ -448,7 +448,7 @@ const realApi = {
   },
 
   async sendAnnouncement(request: SendAnnouncementRequest): Promise<void> {
-    await api.post(ENDPOINTS.ADMIN.SEND_ANNOUNCEMENT, request);
+    await api.post(ENDPOINTS.ADMIN.ANNOUNCEMENTS, request);
   },
 
   async getSystemSettings(): Promise<SystemSettings> {

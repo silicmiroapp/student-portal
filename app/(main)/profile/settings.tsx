@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/Card';
 import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { useTheme } from '@/hooks/useTheme';
 import { useSettingsStore, type ThemeMode, type FontScale } from '@/features/settings/store';
+import { NotificationPreferencesForm } from '@/components/notifications/NotificationPreferencesForm';
 import {
   SPACING,
   BORDER_RADIUS,
@@ -132,6 +133,9 @@ export default function SettingsScreen() {
             />
           </View>
         </Card>
+
+        {/* Notification Preferences */}
+        <NotificationPreferencesForm />
 
         {/* Preview Section */}
         <Text style={[styles.sectionLabel, { color: colors.textSecondary, fontSize: fontSize.xs }]}>
