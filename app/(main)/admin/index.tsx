@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useMemo } from 'react';
 import { View, Text, ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,21 +9,18 @@ import { AdminOverview } from '@/components/admin/AdminOverview';
 import { UserManagement } from '@/components/admin/UserManagement';
 import { SystemActivitySection } from '@/components/admin/SystemActivity';
 import { FinanceMonitoring } from '@/components/admin/FinanceMonitoring';
+import { SystemSettingsPanel } from '@/components/admin/SystemSettingsPanel';
 import { useAdminStore } from '@/features/admin/store';
 import { useAuthStore } from '@/features/auth/store';
+import { useHasPermission, useHasAnyPermission } from '@/hooks/usePermission';
 import { securityLog } from '@/services/securityLog';
 import { useTheme } from '@/hooks/useTheme';
 import { SPACING, FONTS } from '@/constants/theme';
+import { Permission, ROLE_DEFINITIONS } from '@/types/rbac';
 import type { UserRecord } from '@/types/admin';
+import type { UserRole } from '@/types/rbac';
 
-type AdminTab = 'overview' | 'users' | 'activity' | 'finance';
-
-const TABS: { label: string; value: AdminTab }[] = [
-  { label: 'Overview', value: 'overview' },
-  { label: 'Users', value: 'users' },
-  { label: 'Activity', value: 'activity' },
-  { label: 'Finance', value: 'finance' },
-];
+type AdminTab = 'overview' | 'users' | 'activity' | 'finance' | 'system';
 
 export default function AdminDashboard() {
   const insets = useSafeAreaInsets();
@@ -35,18 +32,61 @@ export default function AdminDashboard() {
     activity,
     logs,
     studentFinance,
+    systemSettings,
     isLoading,
     isToggling,
+    isActingOn,
+    successMessage,
     fetchStats,
     fetchUsers,
     fetchActivity,
     fetchLogs,
-    toggleUserStatus,
     fetchStudentFinance,
+    fetchSystemSettings,
+    toggleUserStatus,
+    lockUser,
+    unlockUser,
+    suspendUser,
+    unsuspendUser,
+    resetPassword,
+    changeUserRole,
+    forceLogout,
+    toggleMaintenanceMode,
+    toggleFeatureFlag,
     clearStudentFinance,
+    clearSuccessMessage,
   } = useAdminStore();
 
+  // Permission-based tab visibility
+  const canViewUsers = useHasPermission(Permission.USERS_VIEW);
+  const canViewActivity = useHasAnyPermission([
+    Permission.LOGS_VIEW_USER_ACTIVITY,
+    Permission.LOGS_VIEW_AUDIT_TRAIL,
+  ]);
+  const canViewFinance = useHasPermission(Permission.FINANCE_VIEW_STUDENT);
+  const canViewSystem = useHasPermission(Permission.SYSTEM_MANAGE_SETTINGS);
+
+  // Build tabs based on permissions
+  const TABS = useMemo(() => {
+    const tabs: { label: string; value: AdminTab }[] = [
+      { label: 'Overview', value: 'overview' },
+    ];
+    if (canViewUsers) tabs.push({ label: 'Users', value: 'users' });
+    if (canViewActivity) tabs.push({ label: 'Activity', value: 'activity' });
+    if (canViewFinance) tabs.push({ label: 'Finance', value: 'finance' });
+    if (canViewSystem) tabs.push({ label: 'System', value: 'system' });
+    return tabs;
+  }, [canViewUsers, canViewActivity, canViewFinance, canViewSystem]);
+
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
+
+  // Auto-clear success messages
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(clearSuccessMessage, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, clearSuccessMessage]);
 
   // Log admin access
   useEffect(() => {
@@ -71,8 +111,11 @@ export default function AdminDashboard() {
       case 'finance':
         fetchUsers();
         break;
+      case 'system':
+        fetchSystemSettings();
+        break;
     }
-  }, [activeTab, fetchStats, fetchUsers, fetchActivity, fetchLogs]);
+  }, [activeTab, fetchStats, fetchUsers, fetchActivity, fetchLogs, fetchSystemSettings]);
 
   const onRefresh = useCallback(() => {
     switch (activeTab) {
@@ -90,23 +133,61 @@ export default function AdminDashboard() {
         fetchUsers();
         clearStudentFinance();
         break;
+      case 'system':
+        fetchSystemSettings();
+        break;
     }
-  }, [activeTab, fetchStats, fetchUsers, fetchActivity, fetchLogs, clearStudentFinance]);
+  }, [activeTab, fetchStats, fetchUsers, fetchActivity, fetchLogs, fetchSystemSettings, clearStudentFinance]);
 
+  // ── User action handlers ──────────────────────────────────
   const handleToggleUser = useCallback((userId: string) => {
-    if (user) {
-      securityLog.adminUserModified(user.id, 'toggle_status', userId);
-    }
+    if (user) securityLog.adminUserModified(user.id, 'toggle_status', userId);
     toggleUserStatus(userId);
   }, [user, toggleUserStatus]);
 
-  const handleViewFinance = useCallback((target: UserRecord) => {
-    if (user) {
-      securityLog.adminFinanceViewed(user.id, target.id);
+  const handleLockUser = useCallback((userId: string) => {
+    if (user) securityLog.adminUserLocked(user.id, user.role, userId);
+    lockUser(userId);
+  }, [user, lockUser]);
+
+  const handleUnlockUser = useCallback((userId: string) => {
+    if (user) securityLog.adminUserUnlocked(user.id, user.role, userId);
+    unlockUser(userId);
+  }, [user, unlockUser]);
+
+  const handleSuspendUser = useCallback((userId: string, reason: string) => {
+    if (user) securityLog.adminUserSuspended(user.id, user.role, userId, reason);
+    suspendUser(userId, { userId, reason });
+  }, [user, suspendUser]);
+
+  const handleUnsuspendUser = useCallback((userId: string) => {
+    unsuspendUser(userId);
+  }, [unsuspendUser]);
+
+  const handleResetPassword = useCallback((userId: string) => {
+    if (user) securityLog.adminPasswordReset(user.id, user.role, userId);
+    resetPassword({ userId, notifyUser: true });
+  }, [user, resetPassword]);
+
+  const handleForceLogout = useCallback((userId: string) => {
+    if (user) securityLog.adminForceLogout(user.id, user.role, userId);
+    forceLogout(userId);
+  }, [user, forceLogout]);
+
+  const handleChangeRole = useCallback((userId: string, newRole: UserRole, reason: string) => {
+    const target = users.find((u) => u.id === userId);
+    if (user && target) {
+      securityLog.adminRoleChanged(user.id, user.role, userId, target.role, newRole);
     }
+    changeUserRole({ userId, newRole, reason });
+  }, [user, users, changeUserRole]);
+
+  const handleViewFinance = useCallback((target: UserRecord) => {
+    if (user) securityLog.adminFinanceViewed(user.id, target.id);
     fetchStudentFinance(target.id);
   }, [user, fetchStudentFinance]);
 
+  const roleLabel = ROLE_DEFINITIONS[user?.role ?? 'user']?.label ?? 'User';
   const isFirstLoad = isLoading && !stats && users.length === 0;
 
   if (isFirstLoad) {
@@ -121,16 +202,26 @@ export default function AdminDashboard() {
           <View style={[styles.adminBadge, { backgroundColor: colors.primaryLight }]}>
             <Ionicons name="shield-checkmark" size={20} color={colors.primary} />
           </View>
-          <View>
+          <View style={styles.headerInfo}>
             <Text style={[styles.headerTitle, { color: colors.text, fontSize: fontSize.xl }]}>
               Admin Panel
             </Text>
             <Text style={[styles.headerSub, { color: colors.textSecondary, fontSize: fontSize.xs }]}>
-              {user?.name} · {user?.email}
+              {user?.name} · {roleLabel} · {user?.email}
             </Text>
           </View>
         </View>
       </View>
+
+      {/* Success banner */}
+      {successMessage && (
+        <View style={[styles.successBanner, { backgroundColor: colors.successLight }]}>
+          <Ionicons name="checkmark-circle" size={16} color={colors.success} />
+          <Text style={[styles.successText, { color: colors.success, fontSize: fontSize.xs }]}>
+            {successMessage}
+          </Text>
+        </View>
+      )}
 
       {/* Tab selector */}
       <View style={styles.tabContainer}>
@@ -158,27 +249,35 @@ export default function AdminDashboard() {
         )}
 
         {/* Users Tab */}
-        {activeTab === 'users' && (
+        {activeTab === 'users' && canViewUsers && (
           <View style={styles.section}>
             <SectionHeader title="User Management" />
             <UserManagement
               users={users}
               isToggling={isToggling}
+              isActingOn={isActingOn}
               onToggleUser={handleToggleUser}
+              onLockUser={handleLockUser}
+              onUnlockUser={handleUnlockUser}
+              onSuspendUser={handleSuspendUser}
+              onUnsuspendUser={handleUnsuspendUser}
+              onResetPassword={handleResetPassword}
+              onForceLogout={handleForceLogout}
+              onChangeRole={handleChangeRole}
               onViewFinance={handleViewFinance}
             />
           </View>
         )}
 
         {/* Activity Tab */}
-        {activeTab === 'activity' && (
+        {activeTab === 'activity' && canViewActivity && (
           <View style={styles.section}>
             <SystemActivitySection activity={activity} logs={logs} />
           </View>
         )}
 
         {/* Finance Tab */}
-        {activeTab === 'finance' && (
+        {activeTab === 'finance' && canViewFinance && (
           <View style={styles.section}>
             <SectionHeader title="Finance Monitoring" />
             <FinanceMonitoring
@@ -186,6 +285,18 @@ export default function AdminDashboard() {
               studentFinance={studentFinance}
               isLoading={isLoading}
               onSelectStudent={handleViewFinance}
+            />
+          </View>
+        )}
+
+        {/* System Tab (SuperAdmin only) */}
+        {activeTab === 'system' && canViewSystem && systemSettings && (
+          <View style={styles.section}>
+            <SystemSettingsPanel
+              settings={systemSettings}
+              isLoading={isLoading}
+              onToggleMaintenance={toggleMaintenanceMode}
+              onToggleFeatureFlag={toggleFeatureFlag}
             />
           </View>
         )}
@@ -217,12 +328,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  headerInfo: {
+    flex: 1,
+  },
   headerTitle: {
     fontFamily: FONTS.bold,
   },
   headerSub: {
     fontFamily: FONTS.regular,
     marginTop: 1,
+  },
+  successBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.sm,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.sm,
+  },
+  successText: {
+    fontFamily: FONTS.semiBold,
+    flex: 1,
   },
   tabContainer: {
     paddingHorizontal: SPACING.lg,

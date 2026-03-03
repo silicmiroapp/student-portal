@@ -23,7 +23,23 @@ import {
   FONTS,
 } from '@/constants/theme';
 
+// ── Admin dashboard imports ────────────────────────────────
+import { AdminHomeDashboard } from '@/components/admin/AdminHomeDashboard';
+
 export default function DashboardScreen() {
+  const { user, isAdmin } = useAuthStore();
+
+  // Admin roles get a completely different dashboard
+  if (isAdmin) {
+    return <AdminHomeDashboard />;
+  }
+
+  return <StudentDashboard />;
+}
+
+// ── Student Dashboard (original) ───────────────────────────
+
+function StudentDashboard() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { user } = useAuthStore();

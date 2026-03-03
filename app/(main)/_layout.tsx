@@ -33,9 +33,9 @@ export default function MainLayout() {
       <Tabs.Screen
         name="dashboard"
         options={{
-          title: 'Dashboard',
+          title: isAdmin ? 'Home' : 'Dashboard',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="grid-outline" size={size} color={color} />
+            <Ionicons name={isAdmin ? 'home-outline' : 'grid-outline'} size={size} color={color} />
           ),
         }}
       />
@@ -43,6 +43,8 @@ export default function MainLayout() {
         name="courses"
         options={{
           title: 'Courses',
+          // Hide student-only tabs from admin roles
+          href: isAdmin ? null : undefined,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="book-outline" size={size} color={color} />
           ),
@@ -52,6 +54,7 @@ export default function MainLayout() {
         name="grades"
         options={{
           title: 'Grades',
+          href: isAdmin ? null : undefined,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="school-outline" size={size} color={color} />
           ),
@@ -61,6 +64,7 @@ export default function MainLayout() {
         name="finance"
         options={{
           title: 'Finance',
+          href: isAdmin ? null : undefined,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="wallet-outline" size={size} color={color} />
           ),
@@ -70,7 +74,7 @@ export default function MainLayout() {
         name="admin"
         options={{
           title: 'Admin',
-          // Hide admin tab from non-admin users
+          // Show admin tab only for admin-level roles
           href: isAdmin ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="shield-checkmark-outline" size={size} color={color} />

@@ -1,6 +1,7 @@
 import api from '@/services/api';
 import { ENV } from '@/config/env';
 import type { AuthResponse, LoginRequest, RegisterRequest } from '@/types/auth';
+import { getDefaultPermissions } from '@/services/rbac';
 
 // ─── Configuration ────────────────────────────────────────────
 // Mock mode is controlled by environment, NOT a hardcoded flag.
@@ -58,6 +59,7 @@ const MOCK_ACCOUNTS: Record<string, { password: string; response: AuthResponse }
         email: 'demo@student.edu',
         name: 'Demo User',
         role: 'user',
+        permissions: getDefaultPermissions('user'),
         studentId: 'BUS-2025-0142',
         program: 'Bachelor of Business Administration',
         enrollmentYear: 2025,
@@ -74,7 +76,36 @@ const MOCK_ACCOUNTS: Record<string, { password: string; response: AuthResponse }
         id: '0',
         email: 'admin@portal.edu',
         name: 'System Admin',
+        role: 'super_admin',
+        permissions: getDefaultPermissions('super_admin'),
+      },
+      accessToken: '',
+      refreshToken: '',
+    },
+  },
+  'admin2@portal.edu': {
+    password: 'Admin1234',
+    response: {
+      user: {
+        id: '10',
+        email: 'admin2@portal.edu',
+        name: 'Portal Admin',
         role: 'admin',
+        permissions: getDefaultPermissions('admin'),
+      },
+      accessToken: '',
+      refreshToken: '',
+    },
+  },
+  'support@portal.edu': {
+    password: 'Support1234',
+    response: {
+      user: {
+        id: '11',
+        email: 'support@portal.edu',
+        name: 'Support Agent',
+        role: 'support_admin',
+        permissions: getDefaultPermissions('support_admin'),
       },
       accessToken: '',
       refreshToken: '',
@@ -113,6 +144,7 @@ const mockApi = {
         email: data.email,
         name: data.name,
         role: 'user',
+        permissions: getDefaultPermissions('user'),
         studentId: `STU-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9999)).padStart(4, '0')}`,
         program: 'Bachelor of Business Administration',
         enrollmentYear: new Date().getFullYear(),
