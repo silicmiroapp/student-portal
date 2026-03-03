@@ -10,7 +10,10 @@ import { UserManagement } from '@/components/admin/UserManagement';
 import { SystemActivitySection } from '@/components/admin/SystemActivity';
 import { FinanceMonitoring } from '@/components/admin/FinanceMonitoring';
 import { SystemSettingsPanel } from '@/components/admin/SystemSettingsPanel';
+import { AnnouncementComposer } from '@/components/admin/AnnouncementComposer';
+import { AnnouncementList } from '@/components/admin/AnnouncementList';
 import { useAdminStore } from '@/features/admin/store';
+import { useNotificationStore } from '@/features/notifications/store';
 import { useAuthStore } from '@/features/auth/store';
 import { useHasPermission, useHasAnyPermission } from '@/hooks/usePermission';
 import { securityLog } from '@/services/securityLog';
@@ -20,7 +23,7 @@ import { Permission, ROLE_DEFINITIONS } from '@/types/rbac';
 import type { UserRecord } from '@/types/admin';
 import type { UserRole } from '@/types/rbac';
 
-type AdminTab = 'overview' | 'users' | 'activity' | 'finance' | 'system';
+type AdminTab = 'overview' | 'users' | 'activity' | 'finance' | 'announcements' | 'system';
 
 export default function AdminDashboard() {
   const insets = useSafeAreaInsets();
@@ -56,6 +59,7 @@ export default function AdminDashboard() {
     clearStudentFinance,
     clearSuccessMessage,
   } = useAdminStore();
+  const { fetchAnnouncements, fetchAnnouncementStats } = useNotificationStore();
 
   // Permission-based tab visibility
   const canViewUsers = useHasPermission(Permission.USERS_VIEW);
@@ -65,6 +69,10 @@ export default function AdminDashboard() {
   ]);
   const canViewFinance = useHasPermission(Permission.FINANCE_VIEW_STUDENT);
   const canViewSystem = useHasPermission(Permission.SYSTEM_MANAGE_SETTINGS);
+  const canViewAnnouncements = useHasAnyPermission([
+    Permission.COMM_SEND_ANNOUNCEMENT_ALL,
+    Permission.COMM_MANAGE_ANNOUNCEMENT,
+  ]);
 
   // Build tabs based on permissions
   const TABS = useMemo(() => {
@@ -74,9 +82,10 @@ export default function AdminDashboard() {
     if (canViewUsers) tabs.push({ label: 'Users', value: 'users' });
     if (canViewActivity) tabs.push({ label: 'Activity', value: 'activity' });
     if (canViewFinance) tabs.push({ label: 'Finance', value: 'finance' });
+    if (canViewAnnouncements) tabs.push({ label: 'Announce', value: 'announcements' });
     if (canViewSystem) tabs.push({ label: 'System', value: 'system' });
     return tabs;
-  }, [canViewUsers, canViewActivity, canViewFinance, canViewSystem]);
+  }, [canViewUsers, canViewActivity, canViewFinance, canViewAnnouncements, canViewSystem]);
 
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
 
@@ -111,11 +120,15 @@ export default function AdminDashboard() {
       case 'finance':
         fetchUsers();
         break;
+      case 'announcements':
+        fetchAnnouncements();
+        fetchAnnouncementStats();
+        break;
       case 'system':
         fetchSystemSettings();
         break;
     }
-  }, [activeTab, fetchStats, fetchUsers, fetchActivity, fetchLogs, fetchSystemSettings]);
+  }, [activeTab, fetchStats, fetchUsers, fetchActivity, fetchLogs, fetchAnnouncements, fetchAnnouncementStats, fetchSystemSettings]);
 
   const onRefresh = useCallback(() => {
     switch (activeTab) {
@@ -133,11 +146,15 @@ export default function AdminDashboard() {
         fetchUsers();
         clearStudentFinance();
         break;
+      case 'announcements':
+        fetchAnnouncements();
+        fetchAnnouncementStats();
+        break;
       case 'system':
         fetchSystemSettings();
         break;
     }
-  }, [activeTab, fetchStats, fetchUsers, fetchActivity, fetchLogs, fetchSystemSettings, clearStudentFinance]);
+  }, [activeTab, fetchStats, fetchUsers, fetchActivity, fetchLogs, fetchAnnouncements, fetchAnnouncementStats, fetchSystemSettings, clearStudentFinance]);
 
   // ── User action handlers ──────────────────────────────────
   const handleToggleUser = useCallback((userId: string) => {
@@ -286,6 +303,19 @@ export default function AdminDashboard() {
               isLoading={isLoading}
               onSelectStudent={handleViewFinance}
             />
+          </View>
+        )}
+
+        {/* Announcements Tab */}
+        {activeTab === 'announcements' && canViewAnnouncements && (
+          <View style={styles.section}>
+            <SectionHeader title="Announcements" />
+            <AnnouncementComposer onSuccess={() => {
+              fetchAnnouncements();
+              fetchAnnouncementStats();
+            }} />
+            <View style={{ height: SPACING.md }} />
+            <AnnouncementList />
           </View>
         )}
 
